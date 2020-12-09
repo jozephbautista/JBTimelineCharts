@@ -8,9 +8,11 @@ GitHub: https://github.com/jozephbautista
 
 **Custom Timeline charts using HTML5 Canvas**
 
-![alt text](https://github.com/jozephbautista/JBTimelineCharts/blob/master/wwwroot/images/TimelineChart-Standard.JPG?raw=true)
-
 This project was created due to some project requirements that needed a specific timeline chart layout. And since I couldn't find anything available online (free or paid) that would meet the requirements, I created this Timeline chart from scratch. Please feel free to use/modify it as needed for your project.
+
+<img src="https://user-images.githubusercontent.com/17344628/101560916-305a9180-3979-11eb-959c-59b562daad27.JPG" width="100%"></img>
+<img src="https://user-images.githubusercontent.com/17344628/101560917-30f32800-3979-11eb-9be7-645ec0d1d6bf.JPG" width="100%"></img> 
+
 
 **Usage:** Please refer to the index.cshtml file to see a complete example.
 
