@@ -10,7 +10,8 @@ GitHub: https://github.com/jozephbautista
 
 This project was created due to some project requirements that needed a specific timeline chart layout. And since I couldn't find anything available online (free or paid) that would meet the requirements, I created this Timeline chart from scratch. Please feel free to use/modify it as needed for your project.
 
-<img src="https://user-images.githubusercontent.com/17344628/101560916-305a9180-3979-11eb-959c-59b562daad27.JPG" width="100%"></img>
+<img src="https://user-images.githubusercontent.com/17344628/102133695-57e2ab80-3e0a-11eb-8455-7a9af659ecfd.JPG" width="100%"></img>
+<img src="https://user-images.githubusercontent.com/17344628/102133697-587b4200-3e0a-11eb-9a75-164c20bec000.JPG" width="100%"></img>
 <img src="https://user-images.githubusercontent.com/17344628/101560917-30f32800-3979-11eb-9be7-645ec0d1d6bf.JPG" width="100%"></img> 
 
 
@@ -28,7 +29,7 @@ This project was created due to some project requirements that needed a specific
     <canvas id="Timeline_Standard" style="border: 1px solid #DDDDDD;"></canvas>
 ```
 
-3. Create your canvas properties object: (see index.cshtml)
+3. Create your canvas properties object: (see index.cshtml for complete details)
 
 ```
     var canvas_properties = {...}

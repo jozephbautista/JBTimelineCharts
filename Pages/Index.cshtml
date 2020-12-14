@@ -7,14 +7,17 @@
 <div>
     <script src="~/js/JBTimelineCharts.js"></script>
 
-    <br />
-    <div>
+    <div style="margin-top: 50px;">
         Timeline Chart - Standard
     </div>
     <canvas id="Timeline_Standard" style="border: 1px solid #DDDDDD;"></canvas>
-    <br /><br />
 
-    <div>
+    <div style="margin-top: 50px;">
+        Timeline Chart - News Review
+    </div>
+    <canvas id="Timeline_NewsReview" style="border: 1px solid #DDDDDD;"></canvas>
+
+    <div style="margin-top: 50px;">
         Timeline Chart - Product Lifecycle
     </div>
     <canvas id="Timeline_ProductLifecycle" style="border: 1px solid #DDDDDD;"></canvas>
@@ -54,7 +57,7 @@
             starFillColor: "#A0EAF2",
             starBorderColor: "#888888",
             firstPartyEventFontColor: "#314E59",  // first party event
-            thridPartyEventFontColor: "#57A64A",  // third party event
+            thridPartyEventFontColor: "#DB1C7C",  // third party event
             releaseMilestoneFontColor: "#0074D7",  // release milestone
 
             // Data point
@@ -96,7 +99,7 @@
         };
 
         // Timeline data object - Standard
-        function TimelineData_Standard(tile, month, eventdaterange, eventtype, innovations) {
+        function TimelineData_Standard(tile, month, eventdaterange, eventtype) {
             this.title = tile;
             this.month = month;
             this.eventdaterange = eventdaterange;
@@ -175,6 +178,123 @@
         timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('GPU 2020', 'mm/dd/yyyy', new Array('RTX 3060 TI', 'RTX 3070', 'RTX 3080', 'RTX 3090', 'RX 6800', 'RX 6800 XT', 'RX 6900 XT')));
 
         renderTimelineChart(canvas_properties, timelineDataList_ProductLifecycle);
+
+
+
+
+
+        // =============================
+        // Timeline - News Review
+        // =============================
+        var canvas_properties = {
+            // Canvas type and size
+            canvasType: "NewsReview", // Options: Standard, ProductLifecycle
+            canvasId: "Timeline_NewsReview", // The id of the canvas to apply this property
+            canvasWidth: 1200,
+            canvasHeight: 650,
+            canvasBackgroundColor: "#ffffff",
+
+            // Timeline Bar
+            timelineBarX: 50,
+            timelineBarY: 350,
+            timelineBarWidth: 1080,
+            timeLineBarHeight: 14,
+            timeLineBarBGColor: "#314E59",
+            timeLineBarMonthWidth: 180, // times 6 months = 1080 pixels, which is the same as timelineBarWidth
+            timeLineBarMonthFont: "14px Segoe UI",
+            timeLineBarMonthColor: "#FFFFFF",
+            timeLineBarMonthOffsetY: 12, // to vertically align month text on timeline bar
+
+            // Legend section
+            legendSectionX: 850,
+            legendSectionY: 10,
+            legendSectionWidth: 300,
+            legendSectionHeight: 100,
+            legendContainerBorderColor: "#888888",
+            legendTitleText: "Key",
+            starFillColor: "#A0EAF2",
+            starBorderColor: "#888888",
+            firstPartyEventFontColor: "#314E59",  // first party event
+            thridPartyEventFontColor: "#DB1C7C",  // third party event
+            prBeatFontColor: "#0074D7",  // pr beat
+
+            // Data point
+            maxDataPointPerMonth: 8,
+            datapointTitleFont: "bold 10px Segoe UI",
+            datapointTitleColor: "#333333",
+            datapointTitleLineHeight: 14,
+            datapointDateFont: "10px Segoe UI",
+            datapointDateColor: "#0D0D0D",
+            datapointTextWrapLimit: "80", // number of pixels before the text wraps
+
+            // Line colors and fills
+            datapointLineColor: "#437373",
+            datapointCircleBorderColor: "#437373",
+            datapointCircleFillColor: "#A0EAF2"
+        };
+
+        // Constants - It's already used on above chart, so no need to declare it again here.
+        //const months = {
+        //    JAN: 'JANUARY',
+        //    FEB: 'FEBRUARY',
+        //    MAR: 'MARCH',
+        //    APR: 'APRIL',
+        //    MAY: 'MAY',
+        //    JUN: 'JUNE',
+        //    JUL: 'JULY',
+        //    AUG: 'AUGUST',
+        //    SEP: 'SEPTEMBER',
+        //    OCT: 'OCTOBER',
+        //    NOV: 'NOVEMBER',
+        //    DEC: 'DECEMBER'
+        //};
+
+        const eventtypes_NewsReview = {
+            KEYMOMENT: 'Key Moment',  // only used for legend section
+            PRBEAT: 'PR Beat',        // only used for legend section
+            FIRSTPARTYEVENT: '1st Party Event',
+            THIRDPARTYEVENT: '3rd Party Event'
+        };
+
+        const badgetypes = {
+            NONE: 'None',
+            KEYMOMENT: 'Key Moment',
+            PRBEAT: 'PR Beat'
+        };
+
+        // Timeline data object - Standard
+        function TimelineData_NewsReview(tile, month, eventdaterange, eventtype, badgetype) {
+            this.title = tile;
+            this.month = month;
+            this.eventdaterange = eventdaterange;
+            this.eventtype = eventtype;
+            this.badgetype = badgetype
+        };
+
+        // Expectation: Months being passed should be 6 months only. This will be the actual text that is going to be displayed on the chart.
+        var monthsArray = [months.MAY, months.JUN, months.JUL, months.AUG, months.SEP, months.OCT];
+
+        // ===================
+        // Expectation: Data being passed must be sorted already from oldest to newest. The month property should also be uppercase.
+        var timelineDataList_NewsReview = [];
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Summit', months.MAY, 'May 6', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.KEYMOMENT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Days', months.MAY, 'May 16-17', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Focus', months.MAY, 'May 18-20', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes.KEYMOMENT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Builds', months.MAY, 'May 19-20', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 1', months.MAY, 'May 21-22', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 2', months.MAY, 'May 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 3', months.MAY, 'May 23-24', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 4', months.MAY, 'May 24-25', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
+
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Launch Event', months.JUN, 'June 3 & 10-11', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Marketing Event', months.JUL, 'July 21-22 & 24-25', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.KEYMOMENT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Sales Event', months.JUL, 'July 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Solutions Conference', months.AUG, 'Aug 6', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Practices Event', months.SEP, 'Sep 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes.PRBEAT));
+
+        renderTimelineChart(canvas_properties, timelineDataList_NewsReview);
 
     </script>
 
