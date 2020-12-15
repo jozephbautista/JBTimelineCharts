@@ -30,14 +30,16 @@ function buildChartStandard(properties, timelineData) {
     CTX.fillRect(0, 0, p.canvasWidth, p.canvasHeight);
 
     // Render timeline bar
-    CTX.fillStyle = p.timeLineBarBGColor;
-    CTX.fillRect(p.timelineBarX, p.timelineBarY, p.timelineBarWidth, p.timeLineBarHeight); // x, y, width, height
     var monthX = p.timelineBarX;
     var monthY = p.timelineBarY + p.timeLineBarMonthOffsetY;
+    p.timeLineBarMonthWidth = p.timeLineBarMonthWidth + p.timeLineBarMonthSpacer;
     for (var m = 0; m < monthsArray.length; m++) {
+        CTX.fillStyle = p.timeLineBarBGColor;
+        CTX.fillRect(p.timelineBarX + (m * p.timeLineBarMonthWidth), p.timelineBarY, p.timeLineBarMonthWidth - p.timeLineBarMonthSpacer, p.timeLineBarHeight); // x, y, width, height
+        CTX.stroke();
         CTX.font = p.timeLineBarMonthFont;
         CTX.fillStyle = p.timeLineBarMonthColor;
-        var monthtextleftoffset = (p.timeLineBarMonthWidth - CTX.measureText(monthsArray[m]).width) / 2; // To center the text within 180px width
+        var monthtextleftoffset = ((p.timeLineBarMonthWidth - p.timeLineBarMonthSpacer) - CTX.measureText(monthsArray[m]).width) / 2; // To center the text within 180px width
         CTX.fillText(monthsArray[m], monthX + monthtextleftoffset, monthY);
         monthX += p.timeLineBarMonthWidth;
     }
@@ -105,7 +107,7 @@ function buildChartStandard(properties, timelineData) {
 
         // This will compress the data items towards the center of each month.
         // Set narrowMonthEdgePadding to zero so that there is no padding left and right, making the data items spread out evenly across 180 pixels.
-        var narrowMonthEdgePadding = 50;
+        var narrowMonthEdgePadding = 35;
         var narrowMonthWidth = p.timeLineBarMonthWidth - (narrowMonthEdgePadding * 2);
 
         var MonthDataPointOffsetX = narrowMonthWidth / (MonthCountArray[m].count + 1);
@@ -144,8 +146,8 @@ function buildChartStandard(properties, timelineData) {
                     CTX.stroke();
 
                     // star
-                    if (timelineData[e].eventtype == eventtypes.KEYMOMENT) {
-                        drawStar(CTX, p, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 20, (p.timelineBarY - lineLength) - 45, 5, 10, 5); // Star
+                    if ((timelineData[e].badgetype == badgetypes.KEYMOMENT) || (timelineData[e].badgetype == badgetypes.ALL)) {
+                        drawStar(CTX, p, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 20, (p.timelineBarY - lineLength) - 45, 5, 10, 5);
                     }
 
                     // date
@@ -161,13 +163,10 @@ function buildChartStandard(properties, timelineData) {
                     else if (timelineData[e].eventtype == eventtypes.THIRDPARTYEVENT) {
                         CTX.fillStyle = p.thridPartyEventFontColor;
                     }
-                    else {
-                        CTX.fillStyle = p.firstPartyEventFontColor; // for Key Moment and Release Milestone
-                    }
 
                     var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, (p.timelineBarY - lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
 
-                    if (timelineData[e].eventtype == eventtypes.RELEASEMILESTONE) {
+                    if (timelineData[e].badgetype == badgetypes.RELEASEMILESTONE || timelineData[e].badgetype == badgetypes.ALL) {
                         // Rectangle border
                         CTX.beginPath();
                         CTX.lineWidth = 1;
@@ -186,122 +185,6 @@ function buildChartStandard(properties, timelineData) {
     }
 }
 
-function buildChartProductLifecycle(properties, timelineData) {
-    // Init canvas
-    var canvas = document.getElementById(properties.canvasId);
-    var p = properties;
-
-    canvas.width = p.canvasWidth;
-    canvas.height = p.canvasHeight;
-    var CTX = canvas.getContext('2d');
-    CTX.clearRect(0, 0, p.canvasWidth, p.canvasHeight); // Clears canvas, useful for animation
-    CTX.fillStyle = p.canvasBackgroundColor;
-    CTX.fillRect(0, 0, p.canvasWidth, p.canvasHeight);
-
-    // Render timeline bar
-    CTX.fillStyle = p.timeLineBarBGColor;
-    CTX.fillRect(p.timelineBarX, p.timelineBarY, p.timelineBarWidth, p.timeLineBarHeight); // x, y, width, height
-
-    // Iterate and render data
-    var DataPointOffsetX = p.timelineBarWidth / (timelineData.length + 1);
-
-    var count = 0;
-    var lineLength = 0;
-    var lineOnTop = true;
-    for (var m = 0; m < timelineData.length; m++) {
-        count++;
-
-        // Get how many lines when the title wraps. wrapText end parameter is false = no actual render
-        var titleObj = wrapText(CTX, timelineData[m].title, 0, 0, p.datapointTextWrapLimit, p.datapointTitleLineHeight, false);
-        var dateObj = wrapText(CTX, timelineData[m].eventdaterange, 0, 0, p.datapointTextWrapLimit, false);
-        var innovationCount = 0;
-        for (var i = 0; i < timelineData[m].innovations.length; i++) {
-            var innovationObj = wrapText(CTX, "• " + timelineData[m].innovations[i], 0, 0, p.datapointTextWrapLimit, p.datapointTitleLineHeight, false);
-            innovationCount = innovationCount + innovationObj.linecounter;
-        }
-
-        lineLength = 20 + (titleObj.linecounter * p.datapointTitleLineHeight) + (dateObj.linecounter * p.datapointTitleLineHeight) + (innovationCount * p.datapointTitleLineHeight);
-
-        if (lineOnTop == true) {
-            // line
-            CTX.beginPath();
-            CTX.lineWidth = 2;
-            CTX.moveTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY);
-            CTX.lineTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY - lineLength);
-            CTX.strokeStyle = p.datapointLineColor;
-            CTX.stroke();
-
-            // circle
-            CTX.beginPath();
-            CTX.arc((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY - lineLength - 5, 5, 0, Math.PI * 2, false);
-            CTX.fillStyle = p.datapointCircleFillColor;
-            CTX.fill();
-            CTX.lineWidth = 2;
-            CTX.strokeStyle = p.datapointCircleBorderColor;
-            CTX.stroke();
-
-            // title
-            CTX.font = p.datapointTitleFont;
-            CTX.fillStyle = p.datapointTitleColor;
-            var titleObj = wrapText(CTX, timelineData[m].title, (DataPointOffsetX * count) + 60, p.timelineBarY - lineLength - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
-
-            // date
-            CTX.font = p.datapointDateFont;
-            CTX.fillStyle = p.datapointDateColor;
-            var dateObj = wrapText(CTX, timelineData[m].eventdaterange, (DataPointOffsetX * count) + 60, titleObj.yaxis + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
-
-            // innovations
-            var lastLineYpos = dateObj.yaxis;
-            for (var i = 0; i < timelineData[m].innovations.length; i++) {
-                var innovationObj = wrapText(CTX, "• " + timelineData[m].innovations[i], (DataPointOffsetX * count) + 60, lastLineYpos + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
-                lastLineYpos = innovationObj.yaxis;
-            }
-
-            lineOnTop = false;
-        }
-        else {
-            lineLength = 50;
-
-            // line
-            CTX.beginPath();
-            CTX.lineWidth = 2;
-            CTX.moveTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY + p.timeLineBarHeight);
-            CTX.lineTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY + p.timeLineBarHeight + lineLength);
-            CTX.strokeStyle = p.datapointLineColor;
-            CTX.stroke();
-
-            // circle
-            CTX.beginPath();
-            CTX.arc((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY + p.timeLineBarHeight + lineLength + 5, 5, 0, Math.PI * 2, false);
-            CTX.fillStyle = p.datapointCircleFillColor;
-            CTX.fill();
-            CTX.lineWidth = 2;
-            CTX.strokeStyle = p.datapointCircleBorderColor;
-            CTX.stroke();
-
-            // title
-            CTX.font = p.datapointTitleFont;
-            CTX.fillStyle = p.datapointTitleColor;
-            var titleObj = wrapText(CTX, timelineData[m].title, (DataPointOffsetX * count) + 60, p.timelineBarY + p.timeLineBarHeight + lineLength + 8, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
-
-            // date
-            CTX.font = p.datapointDateFont;
-            CTX.fillStyle = p.datapointDateColor;
-            var dateObj = wrapText(CTX, timelineData[m].eventdaterange, (DataPointOffsetX * count) + 60, titleObj.yaxis + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
-
-            // innovations
-            var lastLineYpos = dateObj.yaxis;
-            for (var i = 0; i < timelineData[m].innovations.length; i++) {
-                var innovationObj = wrapText(CTX, "• " + timelineData[m].innovations[i], (DataPointOffsetX * count) + 60, lastLineYpos + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
-                lastLineYpos = innovationObj.yaxis;
-            }
-
-            lineOnTop = true;
-        }
-    }
-
-}
-
 function buildChartNewsReview(properties, timelineData) {
 
     // Init canvas
@@ -316,14 +199,17 @@ function buildChartNewsReview(properties, timelineData) {
     CTX.fillRect(0, 0, p.canvasWidth, p.canvasHeight);
 
     // Render timeline bar
-    CTX.fillStyle = p.timeLineBarBGColor;
-    CTX.fillRect(p.timelineBarX, p.timelineBarY, p.timelineBarWidth, p.timeLineBarHeight); // x, y, width, height
     var monthX = p.timelineBarX;
     var monthY = p.timelineBarY + p.timeLineBarMonthOffsetY;
+
+    p.timeLineBarMonthWidth = p.timeLineBarMonthWidth + p.timeLineBarMonthSpacer;
     for (var m = 0; m < monthsArray.length; m++) {
+        CTX.fillStyle = p.timeLineBarBGColor;
+        CTX.fillRect(p.timelineBarX + (m * p.timeLineBarMonthWidth), p.timelineBarY, p.timeLineBarMonthWidth - p.timeLineBarMonthSpacer, p.timeLineBarHeight); // x, y, width, height
+        CTX.stroke();
         CTX.font = p.timeLineBarMonthFont;
         CTX.fillStyle = p.timeLineBarMonthColor;
-        var monthtextleftoffset = (p.timeLineBarMonthWidth - CTX.measureText(monthsArray[m]).width) / 2; // To center the text within 180px width
+        var monthtextleftoffset = ((p.timeLineBarMonthWidth - p.timeLineBarMonthSpacer) - CTX.measureText(monthsArray[m]).width) / 2; // To center the text within 180px width
         CTX.fillText(monthsArray[m], monthX + monthtextleftoffset, monthY);
         monthX += p.timeLineBarMonthWidth;
     }
@@ -542,7 +428,121 @@ function buildChartNewsReview(properties, timelineData) {
     }
 }
 
+function buildChartProductLifecycle(properties, timelineData) {
+    // Init canvas
+    var canvas = document.getElementById(properties.canvasId);
+    var p = properties;
 
+    canvas.width = p.canvasWidth;
+    canvas.height = p.canvasHeight;
+    var CTX = canvas.getContext('2d');
+    CTX.clearRect(0, 0, p.canvasWidth, p.canvasHeight); // Clears canvas, useful for animation
+    CTX.fillStyle = p.canvasBackgroundColor;
+    CTX.fillRect(0, 0, p.canvasWidth, p.canvasHeight);
+
+    // Render timeline bar
+    CTX.fillStyle = p.timeLineBarBGColor;
+    CTX.fillRect(p.timelineBarX, p.timelineBarY, p.timelineBarWidth, p.timeLineBarHeight); // x, y, width, height
+
+    // Iterate and render data
+    var DataPointOffsetX = p.timelineBarWidth / (timelineData.length + 1);
+
+    var count = 0;
+    var lineLength = 0;
+    var lineOnTop = true;
+    for (var m = 0; m < timelineData.length; m++) {
+        count++;
+
+        // Get how many lines when the title wraps. wrapText end parameter is false = no actual render
+        var titleObj = wrapText(CTX, timelineData[m].title, 0, 0, p.datapointTextWrapLimit, p.datapointTitleLineHeight, false);
+        var dateObj = wrapText(CTX, timelineData[m].eventdaterange, 0, 0, p.datapointTextWrapLimit, false);
+        var innovationCount = 0;
+        for (var i = 0; i < timelineData[m].innovations.length; i++) {
+            var innovationObj = wrapText(CTX, "• " + timelineData[m].innovations[i], 0, 0, p.datapointTextWrapLimit, p.datapointTitleLineHeight, false);
+            innovationCount = innovationCount + innovationObj.linecounter;
+        }
+
+        lineLength = 20 + (titleObj.linecounter * p.datapointTitleLineHeight) + (dateObj.linecounter * p.datapointTitleLineHeight) + (innovationCount * p.datapointTitleLineHeight);
+
+        if (lineOnTop == true) {
+            // line
+            CTX.beginPath();
+            CTX.lineWidth = 2;
+            CTX.moveTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY);
+            CTX.lineTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY - lineLength);
+            CTX.strokeStyle = p.datapointLineColor;
+            CTX.stroke();
+
+            // circle
+            CTX.beginPath();
+            CTX.arc((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY - lineLength - 5, 5, 0, Math.PI * 2, false);
+            CTX.fillStyle = p.datapointCircleFillColor;
+            CTX.fill();
+            CTX.lineWidth = 2;
+            CTX.strokeStyle = p.datapointCircleBorderColor;
+            CTX.stroke();
+
+            // title
+            CTX.font = p.datapointTitleFont;
+            CTX.fillStyle = p.datapointTitleColor;
+            var titleObj = wrapText(CTX, timelineData[m].title, (DataPointOffsetX * count) + 60, p.timelineBarY - lineLength - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+
+            // date
+            CTX.font = p.datapointDateFont;
+            CTX.fillStyle = p.datapointDateColor;
+            var dateObj = wrapText(CTX, timelineData[m].eventdaterange, (DataPointOffsetX * count) + 60, titleObj.yaxis + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+
+            // innovations
+            var lastLineYpos = dateObj.yaxis;
+            for (var i = 0; i < timelineData[m].innovations.length; i++) {
+                var innovationObj = wrapText(CTX, "• " + timelineData[m].innovations[i], (DataPointOffsetX * count) + 60, lastLineYpos + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+                lastLineYpos = innovationObj.yaxis;
+            }
+
+            lineOnTop = false;
+        }
+        else {
+            lineLength = 50;
+
+            // line
+            CTX.beginPath();
+            CTX.lineWidth = 2;
+            CTX.moveTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY + p.timeLineBarHeight);
+            CTX.lineTo((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY + p.timeLineBarHeight + lineLength);
+            CTX.strokeStyle = p.datapointLineColor;
+            CTX.stroke();
+
+            // circle
+            CTX.beginPath();
+            CTX.arc((p.timelineBarX) + (DataPointOffsetX * count), p.timelineBarY + p.timeLineBarHeight + lineLength + 5, 5, 0, Math.PI * 2, false);
+            CTX.fillStyle = p.datapointCircleFillColor;
+            CTX.fill();
+            CTX.lineWidth = 2;
+            CTX.strokeStyle = p.datapointCircleBorderColor;
+            CTX.stroke();
+
+            // title
+            CTX.font = p.datapointTitleFont;
+            CTX.fillStyle = p.datapointTitleColor;
+            var titleObj = wrapText(CTX, timelineData[m].title, (DataPointOffsetX * count) + 60, p.timelineBarY + p.timeLineBarHeight + lineLength + 8, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+
+            // date
+            CTX.font = p.datapointDateFont;
+            CTX.fillStyle = p.datapointDateColor;
+            var dateObj = wrapText(CTX, timelineData[m].eventdaterange, (DataPointOffsetX * count) + 60, titleObj.yaxis + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+
+            // innovations
+            var lastLineYpos = dateObj.yaxis;
+            for (var i = 0; i < timelineData[m].innovations.length; i++) {
+                var innovationObj = wrapText(CTX, "• " + timelineData[m].innovations[i], (DataPointOffsetX * count) + 60, lastLineYpos + p.datapointTitleLineHeight, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+                lastLineYpos = innovationObj.yaxis;
+            }
+
+            lineOnTop = true;
+        }
+    }
+
+}
 
 
 // ================

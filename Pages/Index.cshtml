@@ -39,10 +39,10 @@
             // Timeline Bar
             timelineBarX: 50,
             timelineBarY: 600,
-            timelineBarWidth: 1080,
             timeLineBarHeight: 30,
             timeLineBarBGColor: "#314E59",
-            timeLineBarMonthWidth: 180, // times 6 months = 1080 pixels, which is the same as timelineBarWidth
+            timeLineBarMonthWidth: 180,
+            timeLineBarMonthSpacer: 3,
             timeLineBarMonthFont: "14px Segoe UI",
             timeLineBarMonthColor: "#FFFFFF",
             timeLineBarMonthOffsetY: 20, // to vertically align month text on timeline bar
@@ -98,12 +98,20 @@
             THIRDPARTYEVENT: '3rd Party Event'
         };
 
+        const badgetypes = {
+            NONE: 'None',
+            KEYMOMENT: 'Key Moment',
+            RELEASEMILESTONE: 'Release Milestone',
+            ALL: 'All'
+        };
+
         // Timeline data object - Standard
-        function TimelineData_Standard(tile, month, eventdaterange, eventtype) {
+        function TimelineData_Standard(tile, month, eventdaterange, eventtype, badgetype) {
             this.title = tile;
             this.month = month;
             this.eventdaterange = eventdaterange;
             this.eventtype = eventtype;
+            this.badgetype = badgetype
         };
 
         // Expectation: Months being passed should be 6 months only. This will be the actual text that is going to be displayed on the chart.
@@ -112,73 +120,19 @@
         // ===================
         // Expectation: Data being passed must be sorted already from oldest to newest. The month property should also be uppercase.
         var timelineDataList_Standard = [];
-        timelineDataList_Standard.push(new TimelineData_Standard('Dev Summit', months.MAY, 'May 6', eventtypes.KEYMOMENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Dev Days', months.MAY, 'May 16-17', eventtypes.FIRSTPARTYEVENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Dev Focus', months.MAY, 'May 18-20', eventtypes.FIRSTPARTYEVENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Dev Builds', months.MAY, 'May 19-20', eventtypes.FIRSTPARTYEVENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Business Launch Event', months.JUN, 'June 3 & 10-11', eventtypes.FIRSTPARTYEVENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Marketing Event', months.JUL, 'July 21-22', eventtypes.KEYMOMENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Sales Event', months.JUL, 'July 22-23', eventtypes.FIRSTPARTYEVENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Business Solutions Conference', months.AUG, 'Aug 6', eventtypes.FIRSTPARTYEVENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Business Practices Event', months.SEP, 'Sep 22-23', eventtypes.KEYMOMENT));
-        timelineDataList_Standard.push(new TimelineData_Standard('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes.RELEASEMILESTONE));
-        timelineDataList_Standard.push(new TimelineData_Standard('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes.THIRDPARTYEVENT));
+        timelineDataList_Standard.push(new TimelineData_Standard('Dev Summit', months.MAY, 'May 6', eventtypes.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Dev Days', months.MAY, 'May 16-17', eventtypes.FIRSTPARTYEVENT, badgetypes.ALL));
+        timelineDataList_Standard.push(new TimelineData_Standard('Dev Focus', months.MAY, 'May 18-20', eventtypes.THIRDPARTYEVENT, badgetypes.NONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Dev Builds', months.MAY, 'May 19-20', eventtypes.THIRDPARTYEVENT, badgetypes.KEYMOMENT));
+        timelineDataList_Standard.push(new TimelineData_Standard('Business Launch Event', months.JUN, 'June 3 & 10-11', eventtypes.FIRSTPARTYEVENT, badgetypes.RELEASEMILESTONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Marketing Event', months.JUL, 'July 21-22', eventtypes.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Sales Event', months.JUL, 'July 22-23', eventtypes.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Business Solutions Conference', months.AUG, 'Aug 6', eventtypes.THIRDPARTYEVENT, badgetypes.RELEASEMILESTONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Business Practices Event', months.SEP, 'Sep 22-23', eventtypes.FIRSTPARTYEVENT, badgetypes.NONE));
+        timelineDataList_Standard.push(new TimelineData_Standard('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes.FIRSTPARTYEVENT, badgetypes.ALL));
+        timelineDataList_Standard.push(new TimelineData_Standard('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes.THIRDPARTYEVENT, badgetypes.ALL));
 
         renderTimelineChart(canvas_properties, timelineDataList_Standard);
-
-
-
-
-        // =============================
-        // Timeline - Product Lifecycle
-        // =============================
-        var canvas_properties = {
-            // Canvas type and size
-            canvasType: "ProductLifecycle",  // Options: Standard, ProductLifecycle
-            canvasId: "Timeline_ProductLifecycle", // The id of the canvas to apply this property
-            canvasWidth: 1200,
-            canvasHeight: 650,
-            canvasBackgroundColor: "#ffffff",
-
-            // Timeline Bar
-            timelineBarX: 50,
-            timelineBarY: 300,
-            timelineBarWidth: 1080,
-            timeLineBarHeight: 10,
-            timeLineBarBGColor: "#314E59",
-
-            // Data point
-            datapointTitleFont: "bold 12px Segoe UI",
-            datapointTitleColor: "#333333",
-            datapointTitleLineHeight: 14,
-            datapointDateFont: "10px Segoe UI",
-            datapointDateColor: "#0D0D0D",
-            datapointTextWrapLimit: "80", // number of pixels before the text wraps
-
-            // Line colors and fills
-            datapointLineColor: "#437373",
-            datapointCircleBorderColor: "#437373",
-            datapointCircleFillColor: "#A0EAF2"
-        };
-
-        // Timeline data object - Product Lifecycle
-        function TimelineData_ProductLifecycle(tile, eventdaterange, innovations) {
-            this.title = tile;
-            this.eventdaterange = eventdaterange;
-            this.innovations = innovations;
-        };
-
-        // Expectation: Data being passed must be sorted already from oldest to newest.
-        var timelineDataList_ProductLifecycle = [];
-        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('CPU 2019', 'mm/dd/yyyy to mm/dd/yyyy', new Array('Ryzen 3000', 'Intel 9th Gen')));
-        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('GPU 2019', 'mm/dd/yyyy to mm/dd/yyyy', new Array('RTX 2060', 'RTX 2070', 'RTX 2080', 'RTX 2080 TI')));
-        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('RAM 2019', 'mm/dd/yyyy', new Array('AData', 'Ballistix', 'Corsair', 'Crucial', 'Samsung')));
-        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('MoBo 2019', 'mm/dd/yyyy', new Array('ASRock', 'ASUS', 'Gigabyte', 'MSI')));
-        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('CPU 2020', 'mm/dd/yyyy', new Array('Ryzen 5000', 'Intel 10th Gen')));
-        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('GPU 2020', 'mm/dd/yyyy', new Array('RTX 3060 TI', 'RTX 3070', 'RTX 3080', 'RTX 3090', 'RX 6800', 'RX 6800 XT', 'RX 6900 XT')));
-
-        renderTimelineChart(canvas_properties, timelineDataList_ProductLifecycle);
-
 
 
 
@@ -197,10 +151,10 @@
             // Timeline Bar
             timelineBarX: 50,
             timelineBarY: 425,
-            timelineBarWidth: 1080,
             timeLineBarHeight: 20,
             timeLineBarBGColor: "#314E59",
-            timeLineBarMonthWidth: 180, // times 6 months = 1080 pixels, which is the same as timelineBarWidth
+            timeLineBarMonthWidth: 180,
+            timeLineBarMonthSpacer: 3,
             timeLineBarMonthFont: "14px Segoe UI",
             timeLineBarMonthColor: "#FFFFFF",
             timeLineBarMonthOffsetY: 15, // to vertically align month text on timeline bar
@@ -297,6 +251,58 @@
 
         renderTimelineChart(canvas_properties, timelineDataList_NewsReview);
 
+
+
+
+        // =============================
+        // Timeline - Product Lifecycle
+        // =============================
+        var canvas_properties = {
+            // Canvas type and size
+            canvasType: "ProductLifecycle",  // Options: Standard, ProductLifecycle
+            canvasId: "Timeline_ProductLifecycle", // The id of the canvas to apply this property
+            canvasWidth: 1200,
+            canvasHeight: 650,
+            canvasBackgroundColor: "#ffffff",
+
+            // Timeline Bar
+            timelineBarX: 50,
+            timelineBarY: 300,
+            timelineBarWidth: 1080,
+            timeLineBarHeight: 10,
+            timeLineBarBGColor: "#314E59",
+
+            // Data point
+            datapointTitleFont: "bold 12px Segoe UI",
+            datapointTitleColor: "#333333",
+            datapointTitleLineHeight: 14,
+            datapointDateFont: "10px Segoe UI",
+            datapointDateColor: "#0D0D0D",
+            datapointTextWrapLimit: "80", // number of pixels before the text wraps
+
+            // Line colors and fills
+            datapointLineColor: "#437373",
+            datapointCircleBorderColor: "#437373",
+            datapointCircleFillColor: "#A0EAF2"
+        };
+
+        // Timeline data object - Product Lifecycle
+        function TimelineData_ProductLifecycle(tile, eventdaterange, innovations) {
+            this.title = tile;
+            this.eventdaterange = eventdaterange;
+            this.innovations = innovations;
+        };
+
+        // Expectation: Data being passed must be sorted already from oldest to newest.
+        var timelineDataList_ProductLifecycle = [];
+        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('CPU 2019', 'mm/dd/yyyy to mm/dd/yyyy', new Array('Ryzen 3000', 'Intel 9th Gen')));
+        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('GPU 2019', 'mm/dd/yyyy to mm/dd/yyyy', new Array('RTX 2060', 'RTX 2070', 'RTX 2080', 'RTX 2080 TI')));
+        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('RAM 2019', 'mm/dd/yyyy', new Array('AData', 'Ballistix', 'Corsair', 'Crucial', 'Samsung')));
+        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('MoBo 2019', 'mm/dd/yyyy', new Array('ASRock', 'ASUS', 'Gigabyte', 'MSI')));
+        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('CPU 2020', 'mm/dd/yyyy', new Array('Ryzen 5000', 'Intel 10th Gen')));
+        timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('GPU 2020', 'mm/dd/yyyy', new Array('RTX 3060 TI', 'RTX 3070', 'RTX 3080', 'RTX 3090', 'RX 6800', 'RX 6800 XT', 'RX 6900 XT')));
+
+        renderTimelineChart(canvas_properties, timelineDataList_ProductLifecycle);
     </script>
 
 </div>
