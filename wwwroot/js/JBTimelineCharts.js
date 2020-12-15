@@ -401,7 +401,7 @@ function buildChartNewsReview(properties, timelineData) {
 
         var lineOnTop = true;
         var lineLength = 0;
-        var lineLengthStep = 30;
+        var lineLengthStep = 45;
 
         var count = 0;
         for (var e = 0; e < timelineData.length; e++) {
@@ -409,12 +409,16 @@ function buildChartNewsReview(properties, timelineData) {
                 count++;
 
                 var monthMaxCount = MonthCountArray[m].count < 9 ? MonthCountArray[m].count : p.maxDataPointPerMonth;
-                var linePadding = 35;
+                var linePadding = 40;
 
                 if (lineOnTop == true) {
                     if (count <= p.maxDataPointPerMonth) {
 
-                        lineLength = (linePadding + (monthMaxCount * lineLengthStep)) - (lineLengthStep * count);
+                        if (monthMaxCount < 3) {
+                            lineLength = linePadding;
+                        } else {
+                            lineLength = ((lineLengthStep * monthMaxCount)) - (lineLengthStep * count);
+                        }
 
                         // line
                         CTX.beginPath();
@@ -434,8 +438,8 @@ function buildChartNewsReview(properties, timelineData) {
                         CTX.stroke();
 
                         // star
-                        if (timelineData[e].badgetype == eventtypes_NewsReview.KEYMOMENT) {
-                            drawStar(CTX, p, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 20, (p.timelineBarY - lineLength) - 45, 5, 10, 5); // Star
+                        if ((timelineData[e].badgetype == badgetypes_NewsReview.KEYMOMENT) || (timelineData[e].badgetype == badgetypes_NewsReview.ALL)) {
+                            drawStar(CTX, p, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 20, (p.timelineBarY - lineLength) - 45, 5, 10, 5);
                         }
 
                         // date
@@ -454,7 +458,7 @@ function buildChartNewsReview(properties, timelineData) {
 
                         var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, (p.timelineBarY - lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
 
-                        if (timelineData[e].badgetype == eventtypes_NewsReview.PRBEAT) {
+                        if (timelineData[e].badgetype == badgetypes_NewsReview.PRBEAT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
                             // Rectangle border
                             CTX.beginPath();
                             CTX.lineWidth = 1;
@@ -473,7 +477,11 @@ function buildChartNewsReview(properties, timelineData) {
                 else {
                     if (count <= p.maxDataPointPerMonth) {
 
-                        lineLength = (linePadding + (monthMaxCount * lineLengthStep)) - (lineLengthStep * (count - 1));
+                        if (monthMaxCount < 3) {
+                            lineLength = linePadding * 2;
+                        } else {
+                            lineLength = (linePadding + (lineLengthStep * monthMaxCount)) - (lineLengthStep * (count - 1));
+                        }
 
                         // line
                         CTX.beginPath();
@@ -493,8 +501,8 @@ function buildChartNewsReview(properties, timelineData) {
                         CTX.stroke();
 
                         // star
-                        if (timelineData[e].eventtype == eventtypes_NewsReview.KEYMOMENT) {
-                            drawStar(CTX, p, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 20, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 45, 5, 10, 5); // Star
+                        if (timelineData[e].eventtype == eventtypes_NewsReview.KEYMOMENT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
+                            drawStar(CTX, p, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 20, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 45, 5, 10, 5);
                         }
 
                         // date
@@ -513,7 +521,7 @@ function buildChartNewsReview(properties, timelineData) {
 
                         var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
 
-                        if (timelineData[e].badgetype == eventtypes_NewsReview.PRBEAT) {
+                        if (timelineData[e].badgetype == eventtypes_NewsReview.PRBEAT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
                             // Rectangle border
                             CTX.beginPath();
                             CTX.lineWidth = 1;

@@ -191,19 +191,19 @@
             canvasType: "NewsReview", // Options: Standard, ProductLifecycle
             canvasId: "Timeline_NewsReview", // The id of the canvas to apply this property
             canvasWidth: 1200,
-            canvasHeight: 650,
+            canvasHeight: 820,
             canvasBackgroundColor: "#ffffff",
 
             // Timeline Bar
             timelineBarX: 50,
-            timelineBarY: 350,
+            timelineBarY: 425,
             timelineBarWidth: 1080,
-            timeLineBarHeight: 14,
+            timeLineBarHeight: 20,
             timeLineBarBGColor: "#314E59",
             timeLineBarMonthWidth: 180, // times 6 months = 1080 pixels, which is the same as timelineBarWidth
             timeLineBarMonthFont: "14px Segoe UI",
             timeLineBarMonthColor: "#FFFFFF",
-            timeLineBarMonthOffsetY: 12, // to vertically align month text on timeline bar
+            timeLineBarMonthOffsetY: 15, // to vertically align month text on timeline bar
 
             // Legend section
             legendSectionX: 850,
@@ -256,10 +256,11 @@
             THIRDPARTYEVENT: '3rd Party Event'
         };
 
-        const badgetypes = {
+        const badgetypes_NewsReview = {
             NONE: 'None',
             KEYMOMENT: 'Key Moment',
-            PRBEAT: 'PR Beat'
+            PRBEAT: 'PR Beat',
+            ALL: 'All'
         };
 
         // Timeline data object - Standard
@@ -277,22 +278,22 @@
         // ===================
         // Expectation: Data being passed must be sorted already from oldest to newest. The month property should also be uppercase.
         var timelineDataList_NewsReview = [];
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Summit', months.MAY, 'May 6', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.KEYMOMENT));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Days', months.MAY, 'May 16-17', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Focus', months.MAY, 'May 18-20', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes.KEYMOMENT));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Builds', months.MAY, 'May 19-20', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 1', months.MAY, 'May 21-22', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 2', months.MAY, 'May 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 3', months.MAY, 'May 23-24', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 4', months.MAY, 'May 24-25', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Summit - Tech launch 2020', months.MAY, 'May 6', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.KEYMOMENT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Days', months.MAY, 'May 16-17', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.ALL));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Focus', months.MAY, 'May 18-20', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes_NewsReview.ALL));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Builds', months.MAY, 'May 19-20', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes_NewsReview.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 1', months.MAY, 'May 21-22', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 2', months.MAY, 'May 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 3', months.MAY, 'May 23-24', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Dev Test 4', months.MAY, 'May 24-25', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.ALL));
 
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Launch Event', months.JUN, 'June 3 & 10-11', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Marketing Event', months.JUL, 'July 21-22 & 24-25', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.KEYMOMENT));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Sales Event', months.JUL, 'July 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Solutions Conference', months.AUG, 'Aug 6', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Practices Event', months.SEP, 'Sep 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.NONE));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes.PRBEAT));
-        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Launch Event', months.JUN, 'June 3 & 10-11', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.ALL));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Marketing Event', months.JUL, 'July 21-22 & 24-25', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.KEYMOMENT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Sales Event', months.JUL, 'July 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Solutions Conference', months.AUG, 'Aug 6', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Practices Event', months.SEP, 'Sep 22-23', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.NONE));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.PRBEAT));
+        timelineDataList_NewsReview.push(new TimelineData_NewsReview('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes_NewsReview.PRBEAT));
 
         renderTimelineChart(canvas_properties, timelineDataList_NewsReview);
 
