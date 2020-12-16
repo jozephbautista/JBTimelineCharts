@@ -70,16 +70,18 @@ function buildChartStandard(properties, timelineData) {
     CTX.beginPath();
     CTX.strokeStyle = p.releaseMilestoneFontColor;
     CTX.rect(p.legendSectionX + 10, p.legendSectionY + 65, 30, 20); // Release Milestone (rectangle)
-    //CTX.fillStyle = p.releaseMilestoneFontColor;
-    //CTX.fillRect(p.legendSectionX + 15, p.legendSectionY + 65, 20, 20); // Release Milestone
     CTX.stroke();
     CTX.beginPath();
-    CTX.fillStyle = p.firstPartyEventFontColor;
-    CTX.fillRect(p.legendSectionX + 165, p.legendSectionY + 35, 20, 20); // 1st Party Event
+    CTX.arc(p.legendSectionX + 180, p.legendSectionY + 45, 5, 0, Math.PI * 2, false); // 1st Party Event
+    CTX.fillStyle = p.datapointCircleFillColor;
+    CTX.fill();
+    CTX.lineWidth = 1;
+    CTX.strokeStyle = p.datapointCircleBorderColor;
     CTX.stroke();
     CTX.beginPath();
-    CTX.fillStyle = p.thridPartyEventFontColor;
-    CTX.fillRect(p.legendSectionX + 165, p.legendSectionY + 65, 20, 20); // 3rd Party Event
+    CTX.arc(p.legendSectionX + 180, p.legendSectionY + 75, 5, 0, Math.PI * 2, false); // 3rd Party Event
+    CTX.lineWidth = 1;
+    CTX.strokeStyle = p.datapointCircleBorderColor;
     CTX.stroke();
 
     // Count how many events per month
@@ -137,13 +139,24 @@ function buildChartStandard(properties, timelineData) {
                     CTX.stroke();
 
                     // circle
-                    CTX.beginPath();
-                    CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
-                    CTX.fillStyle = p.datapointCircleFillColor;
-                    CTX.fill();
-                    CTX.lineWidth = 2;
-                    CTX.strokeStyle = p.datapointCircleBorderColor;
-                    CTX.stroke();
+                    if (timelineData[e].eventtype == eventtypes.FIRSTPARTYEVENT) {
+                        CTX.beginPath();
+                        CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
+                        CTX.fillStyle = p.datapointCircleFillColor;
+                        CTX.fill();
+                        CTX.lineWidth = 1;
+                        CTX.strokeStyle = p.datapointCircleBorderColor;
+                        CTX.stroke();
+                    }
+                    else if (timelineData[e].eventtype == eventtypes.THIRDPARTYEVENT) {
+                        CTX.beginPath();
+                        CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
+                        CTX.fillStyle = "#ffffff";
+                        CTX.fill();
+                        CTX.lineWidth = 1;
+                        CTX.strokeStyle = p.datapointCircleBorderColor;
+                        CTX.stroke();
+                    }
 
                     // star
                     if ((timelineData[e].badgetype == badgetypes.KEYMOMENT) || (timelineData[e].badgetype == badgetypes.ALL)) {
@@ -157,12 +170,7 @@ function buildChartStandard(properties, timelineData) {
 
                     // title
                     CTX.font = p.datapointTitleFont;
-                    if (timelineData[e].eventtype == eventtypes.FIRSTPARTYEVENT) {
-                        CTX.fillStyle = p.firstPartyEventFontColor;
-                    }
-                    else if (timelineData[e].eventtype == eventtypes.THIRDPARTYEVENT) {
-                        CTX.fillStyle = p.thridPartyEventFontColor;
-                    }
+                    CTX.fillStyle = p.datapointTitleColor;
 
                     var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, (p.timelineBarY - lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
 
@@ -239,17 +247,19 @@ function buildChartNewsReview(properties, timelineData) {
     drawStar(CTX, p, p.legendSectionX + 26, p.legendSectionY + 45, 5, 10, 5); // Star
     CTX.beginPath();
     CTX.strokeStyle = p.prBeatFontColor;
-    CTX.rect(p.legendSectionX + 10, p.legendSectionY + 65, 30, 20); // Release Milestone (rectangle)
-    //CTX.fillStyle = p.prBeatFontColor;
-    //CTX.fillRect(p.legendSectionX + 15, p.legendSectionY + 65, 20, 20); // Release Milestone
+    CTX.rect(p.legendSectionX + 10, p.legendSectionY + 65, 30, 20); // PR Beat (rectangle)
     CTX.stroke();
     CTX.beginPath();
-    CTX.fillStyle = p.firstPartyEventFontColor;
-    CTX.fillRect(p.legendSectionX + 165, p.legendSectionY + 35, 20, 20); // 1st Party Event
+    CTX.arc(p.legendSectionX + 180, p.legendSectionY + 45, 5, 0, Math.PI * 2, false); // 1st Party Event
+    CTX.fillStyle = p.datapointCircleFillColor;
+    CTX.fill();
+    CTX.lineWidth = 1;
+    CTX.strokeStyle = p.datapointCircleBorderColor;
     CTX.stroke();
     CTX.beginPath();
-    CTX.fillStyle = p.thridPartyEventFontColor;
-    CTX.fillRect(p.legendSectionX + 165, p.legendSectionY + 65, 20, 20); // 3rd Party Event
+    CTX.arc(p.legendSectionX + 180, p.legendSectionY + 75, 5, 0, Math.PI * 2, false); // 3rd Party Event
+    CTX.lineWidth = 1;
+    CTX.strokeStyle = p.datapointCircleBorderColor;
     CTX.stroke();
 
     // Count how many events per month
@@ -314,14 +324,24 @@ function buildChartNewsReview(properties, timelineData) {
                         CTX.strokeStyle = p.datapointLineColor;
                         CTX.stroke();
 
-                        // circle
-                        CTX.beginPath();
-                        CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
-                        CTX.fillStyle = p.datapointCircleFillColor;
-                        CTX.fill();
-                        CTX.lineWidth = 2;
-                        CTX.strokeStyle = p.datapointCircleBorderColor;
-                        CTX.stroke();
+                        if (timelineData[e].eventtype == eventtypes_NewsReview.FIRSTPARTYEVENT) {
+                            CTX.beginPath();
+                            CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
+                            CTX.fillStyle = p.datapointCircleFillColor;
+                            CTX.fill();
+                            CTX.lineWidth = 1;
+                            CTX.strokeStyle = p.datapointCircleBorderColor;
+                            CTX.stroke();
+                        }
+                        else if (timelineData[e].eventtype == eventtypes_NewsReview.THIRDPARTYEVENT) {
+                            CTX.beginPath();
+                            CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
+                            CTX.fillStyle = "#ffffff";
+                            CTX.fill();
+                            CTX.lineWidth = 1;
+                            CTX.strokeStyle = p.datapointCircleBorderColor;
+                            CTX.stroke();
+                        }
 
                         // star
                         if ((timelineData[e].badgetype == badgetypes_NewsReview.KEYMOMENT) || (timelineData[e].badgetype == badgetypes_NewsReview.ALL)) {
@@ -335,13 +355,7 @@ function buildChartNewsReview(properties, timelineData) {
 
                         // title
                         CTX.font = p.datapointTitleFont;
-                        if (timelineData[e].eventtype == eventtypes_NewsReview.FIRSTPARTYEVENT) {
-                            CTX.fillStyle = p.firstPartyEventFontColor;
-                        }
-                        else if (timelineData[e].eventtype == eventtypes_NewsReview.THIRDPARTYEVENT) {
-                            CTX.fillStyle = p.thridPartyEventFontColor;
-                        }
-
+                        CTX.fillStyle = p.datapointTitleColor;
                         var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, (p.timelineBarY - lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
 
                         if (timelineData[e].badgetype == badgetypes_NewsReview.PRBEAT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
@@ -378,13 +392,24 @@ function buildChartNewsReview(properties, timelineData) {
                         CTX.stroke();
 
                         // circle
-                        CTX.beginPath();
-                        CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 5, 5, 0, Math.PI * 2, false);
-                        CTX.fillStyle = p.datapointCircleFillColor;
-                        CTX.fill();
-                        CTX.lineWidth = 2;
-                        CTX.strokeStyle = p.datapointCircleBorderColor;
-                        CTX.stroke();
+                        if (timelineData[e].eventtype == eventtypes_NewsReview.FIRSTPARTYEVENT) {
+                            CTX.beginPath();
+                            CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 5, 5, 0, Math.PI * 2, false);
+                            CTX.fillStyle = p.datapointCircleFillColor;
+                            CTX.fill();
+                            CTX.lineWidth = 1;
+                            CTX.strokeStyle = p.datapointCircleBorderColor;
+                            CTX.stroke();
+                        }
+                        else if (timelineData[e].eventtype == eventtypes_NewsReview.THIRDPARTYEVENT) {
+                            CTX.beginPath();
+                            CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 5, 5, 0, Math.PI * 2, false);
+                            CTX.fillStyle = "#ffffff";
+                            CTX.fill();
+                            CTX.lineWidth = 1;
+                            CTX.strokeStyle = p.datapointCircleBorderColor;
+                            CTX.stroke();
+                        }
 
                         // star
                         if (timelineData[e].eventtype == eventtypes_NewsReview.KEYMOMENT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
@@ -398,13 +423,7 @@ function buildChartNewsReview(properties, timelineData) {
 
                         // title
                         CTX.font = p.datapointTitleFont;
-                        if (timelineData[e].eventtype == eventtypes_NewsReview.FIRSTPARTYEVENT) {
-                            CTX.fillStyle = p.firstPartyEventFontColor;
-                        }
-                        else if (timelineData[e].eventtype == eventtypes_NewsReview.THIRDPARTYEVENT) {
-                            CTX.fillStyle = p.thridPartyEventFontColor;
-                        }
-
+                        CTX.fillStyle = p.datapointTitleColor;
                         var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
 
                         if (timelineData[e].badgetype == eventtypes_NewsReview.PRBEAT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
