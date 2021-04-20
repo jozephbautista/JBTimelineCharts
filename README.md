@@ -10,9 +10,10 @@ GitHub: https://github.com/jozephbautista
 
 This project was created due to some project requirements that needed a specific timeline chart layout. And since I couldn't find anything available online (free or paid) that would meet the requirements, I created this Timeline chart from scratch. Please feel free to use/modify it as needed for your project.
 
-<img src="https://user-images.githubusercontent.com/17344628/102399186-24805800-3f95-11eb-9a7d-007c2ff9de34.JPG" width="100%"></img>
-<img src="https://user-images.githubusercontent.com/17344628/102399187-2518ee80-3f95-11eb-8db2-89679f644c99.JPG" width="100%"></img>
-<img src="https://user-images.githubusercontent.com/17344628/102399190-2518ee80-3f95-11eb-96c2-7be1b2393d91.JPG" width="100%"></img> 
+<!-- To upload new image screenshots: On GitHub.com, create an issue, attach images(s) by dragging to "write" window, but don't submit the issue. The uploaded image url(s) will show up inside the "Write" window. -->
+<img src="https://user-images.githubusercontent.com/17344628/115454510-b44d4180-a1d5-11eb-8408-8bd23be61b8d.JPG" width="100%"></img>
+<img src="https://user-images.githubusercontent.com/17344628/115454513-b4e5d800-a1d5-11eb-821f-5507dca2d454.JPG" width="100%"></img>
+<img src="https://user-images.githubusercontent.com/17344628/115454515-b4e5d800-a1d5-11eb-8f98-e92d7c7d6eaf.JPG" width="100%"></img> 
 
 
 **Usage:** Please refer to the index.cshtml file to see a complete example.
