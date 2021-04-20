@@ -125,10 +125,11 @@ function buildChartStandard(properties, timelineData) {
             if (monthsArray[m] == timelineData[e].month) {
                 count++;
 
-                var lineBottomPadding = MonthCountArray[m].count < 5 ? 100 : 0;
+                var lineBottomPadding = 50;
                 if (count <= p.maxDataPointPerMonth) {
 
-                    lineLength = (lineBottomPadding + (MonthCountArray[m].count * lineLengthStep)) - (lineLengthStep * count);
+                    var DatapointPerMonth = MonthCountArray[m].count > 4 ? 4 : MonthCountArray[m].count;
+                    lineLength = (lineBottomPadding + (DatapointPerMonth * lineLengthStep)) - (lineLengthStep * count);
 
                     // line
                     CTX.beginPath();
@@ -172,18 +173,21 @@ function buildChartStandard(properties, timelineData) {
                     CTX.font = p.datapointTitleFont;
                     CTX.fillStyle = p.datapointTitleColor;
 
+                    // get title width
+                    var titlemetrics = CTX.measureText(timelineData[e].eventdaterange);
                     var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, (p.timelineBarY - lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+
+                    var rect_width = titlemetrics.width;
+                    if (textobj.maxwidth > titlemetrics.width) {
+                        rect_width = textobj.maxwidth;
+                    }
 
                     if (timelineData[e].badgetype == badgetypes.RELEASEMILESTONE || timelineData[e].badgetype == badgetypes.ALL) {
                         // Rectangle border
                         CTX.beginPath();
                         CTX.lineWidth = 1;
                         CTX.strokeStyle = p.releaseMilestoneFontColor;
-                        var paddingright = 0;
-                        if (textobj.linecounter == 1) {
-                            paddingright = 30;
-                        }
-                        CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, (p.timelineBarY - lineLength) - 32, textobj.maxwidth + paddingright, textobj.yaxis - (p.timelineBarY - lineLength) + 37);
+                        CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, (p.timelineBarY - lineLength) - 32, rect_width + 5, textobj.yaxis - (p.timelineBarY - lineLength) + 37);
                         CTX.stroke();
                     }
                 }
@@ -356,18 +360,23 @@ function buildChartNewsReview(properties, timelineData) {
                         // title
                         CTX.font = p.datapointTitleFont;
                         CTX.fillStyle = p.datapointTitleColor;
+
+                        // get title width
+                        var titlemetrics = CTX.measureText(timelineData[e].eventdaterange);
+
                         var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, (p.timelineBarY - lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+
+                        var rect_width = titlemetrics.width;
+                        if (textobj.maxwidth > titlemetrics.width) {
+                            rect_width = textobj.maxwidth;
+                        }
 
                         if (timelineData[e].badgetype == badgetypes_NewsReview.PRBEAT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
                             // Rectangle border
                             CTX.beginPath();
                             CTX.lineWidth = 1;
                             CTX.strokeStyle = p.prBeatFontColor;
-                            var paddingright = 0;
-                            if (textobj.linecounter == 1) {
-                                paddingright = 30;
-                            }
-                            CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, (p.timelineBarY - lineLength) - 32, textobj.maxwidth + paddingright, textobj.yaxis - (p.timelineBarY - lineLength) + 37);
+                            CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, (p.timelineBarY - lineLength) - 32, rect_width + 5, textobj.yaxis - (p.timelineBarY - lineLength) + 37);
                             CTX.stroke();
                         }
                     }
@@ -424,18 +433,21 @@ function buildChartNewsReview(properties, timelineData) {
                         // title
                         CTX.font = p.datapointTitleFont;
                         CTX.fillStyle = p.datapointTitleColor;
+
+                        // get title width
+                        var titlemetrics = CTX.measureText(timelineData[e].eventdaterange);
                         var textobj = wrapText(CTX, timelineData[e].title, (p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 10, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 2, p.datapointTextWrapLimit, p.datapointTitleLineHeight, true);
+                        var rect_width = titlemetrics.width;
+                        if (textobj.maxwidth > titlemetrics.width) {
+                            rect_width = textobj.maxwidth;
+                        }
 
                         if (timelineData[e].badgetype == eventtypes_NewsReview.PRBEAT || timelineData[e].badgetype == badgetypes_NewsReview.ALL) {
                             // Rectangle border
                             CTX.beginPath();
                             CTX.lineWidth = 1;
                             CTX.strokeStyle = p.prBeatFontColor;
-                            var paddingright = 0;
-                            if (textobj.linecounter == 1) {
-                                paddingright = 30;
-                            }
-                            CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 32, textobj.maxwidth + paddingright, textobj.yaxis - ((p.timelineBarY + p.timeLineBarHeight) + lineLength) + 37);
+                            CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, ((p.timelineBarY + p.timeLineBarHeight) + lineLength) - 32, rect_width + 5, textobj.yaxis - ((p.timelineBarY + p.timeLineBarHeight) + lineLength) + 37);
                             CTX.stroke();
                         }                    }
 
@@ -584,11 +596,7 @@ function wrapText(context, text, x, y, maxWidth, lineHeight, rendertext) {
         var testLine = line + words[n] + ' ';
         var metrics = context.measureText(testLine);
         var testWidth = metrics.width;
-        //console.log(words[n] + " ----- width: " + testWidth);
-
-        if (testWidth > maxtextwidth) {
-            maxtextwidth = testWidth;
-        }
+        //console.log("*** " + text + " - " + words[n] + " ----- width: " + testWidth);
 
         if (testWidth > maxWidth && n > 0) {
             if (rendertext == true) {
@@ -599,6 +607,11 @@ function wrapText(context, text, x, y, maxWidth, lineHeight, rendertext) {
 
                 // Not last line of wrapped text
                 context.fillText(indent + line, x, y);
+
+                var textmeasure = context.measureText(line);
+                if (textmeasure.width > maxtextwidth) {
+                    maxtextwidth = textmeasure.width;
+                }
             }
 
             linecounter++;
@@ -607,6 +620,8 @@ function wrapText(context, text, x, y, maxWidth, lineHeight, rendertext) {
         }
         else {
             line = testLine;
+            var textmeasure = context.measureText(line);
+            maxtextwidth = textmeasure.width;
         }
     }
 
@@ -618,6 +633,11 @@ function wrapText(context, text, x, y, maxWidth, lineHeight, rendertext) {
 
         // Last line of wrapped text
         context.fillText(indent + line, x, y);
+
+        var textmeasure = context.measureText(line);
+        if (textmeasure.width > maxtextwidth) {
+            maxtextwidth = textmeasure.width;
+        }
     }
 
     linecounter++;
