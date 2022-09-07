@@ -105,6 +105,8 @@ function buildChartStandard(properties, timelineData) {
 
     // Iterate and render data for each month
     // Rule: Render only the first 4 events of a month
+    var datapointlist = [];
+    var eventtypelist = [];
     for (var m = 0; m < MonthCountArray.length; m++) {
 
         // This will compress the data items towards the center of each month.
@@ -142,21 +144,27 @@ function buildChartStandard(properties, timelineData) {
                     // circle
                     if (timelineData[e].eventtype == eventtypes.FIRSTPARTYEVENT) {
                         CTX.beginPath();
-                        CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
+                            const datapoint = new Path2D();
+                            datapoint.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
                         CTX.fillStyle = p.datapointCircleFillColor;
-                        CTX.fill();
                         CTX.lineWidth = 1;
                         CTX.strokeStyle = p.datapointCircleBorderColor;
-                        CTX.stroke();
+                        CTX.fill(datapoint);
+                        CTX.stroke(datapoint);
+                        datapointlist.push(datapoint);
+                        eventtypelist.push(eventtypes.FIRSTPARTYEVENT);
                     }
                     else if (timelineData[e].eventtype == eventtypes.THIRDPARTYEVENT) {
                         CTX.beginPath();
-                        CTX.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
+                            const datapoint = new Path2D();
+                            datapoint.arc((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count), (p.timelineBarY - lineLength) - 5, 5, 0, Math.PI * 2, false);
                         CTX.fillStyle = "#ffffff";
-                        CTX.fill();
                         CTX.lineWidth = 1;
                         CTX.strokeStyle = p.datapointCircleBorderColor;
-                        CTX.stroke();
+                        CTX.fill(datapoint);
+                        CTX.stroke(datapoint);
+                        datapointlist.push(datapoint);
+                        eventtypelist.push(eventtypes.THIRDPARTYEVENT);
                     }
 
                     // star
@@ -190,11 +198,61 @@ function buildChartStandard(properties, timelineData) {
                         CTX.rect((p.timelineBarX + (p.timeLineBarMonthWidth * m)) + narrowMonthEdgePadding + (MonthDataPointOffsetX * count) + 7, (p.timelineBarY - lineLength) - 32, rect_width + 5, textobj.yaxis - (p.timelineBarY - lineLength) + 37);
                         CTX.stroke();
                     }
+
                 }
 
             }
         }
     }
+
+    // Event listener for hover/highlight on each datapoint
+    canvas.addEventListener('mousemove', function (event) {
+        event = event || window.event;
+        for (var i = datapointlist.length - 1; i >= 0; i--) {
+
+            if (datapointlist[i] && CTX.isPointInPath(datapointlist[i], event.offsetX, event.offsetY)) {
+                //Hover over datapoint
+                canvas.style.cursor = 'pointer';
+                //CTX.beginPath();
+                //CTX.fillStyle = 'yellow';
+                //CTX.lineWidth = 1;
+                //CTX.strokeStyle = p.datapointCircleBorderColor;
+                //CTX.fill(datapointlist[i]);
+                //CTX.stroke(datapoint[i]);
+                return
+            } else {
+                //Default when not in hover
+                canvas.style.cursor = 'default';
+                //for (var d = datapointlist.length - 1; d >= 0; d--) {
+                //    CTX.beginPath();
+                //    if (eventtypelist[d] == eventtypes.FIRSTPARTYEVENT) {
+                //        CTX.fillStyle = p.datapointCircleFillColor;
+                //    }
+                //    else {
+                //        CTX.fillStyle = '#ffffff';
+                //    }
+                //    CTX.lineWidth = 1;
+                //    CTX.strokeStyle = p.datapointCircleBorderColor;
+                //    CTX.fill(datapointlist[d]);
+                //    CTX.stroke(datapointlist[d]);
+                //}
+            }
+        }
+    });
+
+    // Clickable links
+    var links = ['http://YouTube.com', 'http://Yahoo.com', 'http://msn.com', 'http://bing.com', 'http://espn.com', 'http://microsoft.com', 'http://tesla.com', 'http://att.com', 'http://coke.com', 'http://pepsi.com', 'http://yeti.com'];
+    
+    canvas.addEventListener('mousedown', function (event) {
+        event = event || window.event;
+        for (var i = datapointlist.length - 1; i >= 0; i--) {
+            if (datapointlist[i] && CTX.isPointInPath(datapointlist[i], event.offsetX, event.offsetY)) {
+                //Click action on a datapoint
+                window.open(links[i]);
+                return
+            }
+        }
+    });
 }
 
 function buildChartNewsReview(properties, timelineData) {
@@ -579,6 +637,7 @@ function buildChartProductLifecycle(properties, timelineData) {
 // ================
 // Common functions
 // ================
+
 function wrapText(context, text, x, y, maxWidth, lineHeight, rendertext) {
     var words = text.split(' ');
 
