@@ -4,7 +4,7 @@
 // GitHub: https://github.com/jozephbautista
 // =====================================================
 
-function renderTimelineChart(properties, data) {
+function renderChart(properties, data) {
     if (properties.canvasType == "Standard") {
         buildChartStandard(properties, data);
     }
@@ -633,10 +633,227 @@ function buildChartProductLifecycle(properties, timelineData) {
 
 }
 
+function buildBubbleChart_Activity(properties) {
+
+    // Canvas properties
+    var canvasWidth = 1200;
+    var canvasHeight = 570;
+    var canvasZeroX = 70;
+    var canvasZeroY = 500;
+    var canvasBackgroundColor = "#ffffff";
+    var canvasXYLineColor = "#eff6fc";
+
+    // Horizontal lines
+    var canvasHorizontalLineSpacing = 48;
+    var canvasHorizontalLineColor = '#E1E1E1';
+
+    // Fonts for X-axis and Y-axis units
+    var labelXYUnitsFont = "10px Segoe UI";
+    var labelXYUnitsColor = "#605e5c";
+
+    // Datapoint colors and fills
+    var datapointTitleFont = "bold 14px Segoe UI";
+    var datapointCircleBorderColor = "#106EBE";
+    var datapointCircleFillColor = "#DEECF9";
+
+    // Label fonts and texts
+    var labelXYFont = 'bold 18px Segoe UI';
+    var labelXYColor = '#888888';
+
+    // -------------------------------------------
+
+    // Init canvas
+    var canvas = document.getElementById(properties.canvasId);
+    var p = properties;
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    var CTX = canvas.getContext('2d');
+    CTX.clearRect(0, 0, canvasWidth, canvasHeight); // Clears canvas, useful for animation
+    CTX.fillStyle = canvasBackgroundColor;
+
+    // Render X,Y lines
+    CTX.beginPath();
+    CTX.lineWidth = 2;
+    CTX.moveTo(canvasZeroX, 0);
+    CTX.lineTo(canvasZeroX, canvasZeroY);
+    CTX.lineTo(canvasWidth, canvasZeroY);
+    CTX.strokeStyle = canvasXYLineColor;
+    CTX.stroke();
+
+    // Render diagonal line
+    CTX.beginPath();
+    CTX.lineWidth = 6;
+    CTX.moveTo(canvasZeroX, canvasZeroY);
+    CTX.lineTo(canvas.width, 0);
+    CTX.strokeStyle = canvasXYLineColor;
+    CTX.stroke();
+
+    // Render Y-axis lines and label units
+    for (var m = 1; m < 11; m++) {
+        CTX.beginPath();
+        CTX.lineWidth = .5;
+        CTX.moveTo(canvasZeroX, canvasZeroY - (m * canvasHorizontalLineSpacing));
+        CTX.lineTo(canvasWidth, canvasZeroY - (m * canvasHorizontalLineSpacing));
+        CTX.strokeStyle = canvasHorizontalLineColor;
+        CTX.stroke();
+
+        CTX.beginPath();
+        CTX.font = labelXYUnitsFont;
+        CTX.fillStyle = labelXYUnitsColor;
+        CTX.textAlign = 'right';
+        CTX.fillText((m * 10) + "%", canvasZeroX - 5, canvasZeroY - (m * canvasHorizontalLineSpacing));
+        //CTX.fillText("$" + (m * 10), canvasZeroX - 5, canvasZeroY - (m * canvasHorizontalLineSpacing));
+    }
+
+    // Render Y-axis label (rotate vertically)
+    var yAxisX = 8;
+    var yAxisY = canvasZeroY / 2;
+    CTX.font = labelXYFont;
+    CTX.fillStyle = labelXYColor;
+    CTX.save();
+    CTX.translate(yAxisX, yAxisY);
+    CTX.rotate(-Math.PI / 2);
+    CTX.textAlign = 'center';
+    CTX.fillText(p.labelYAxisText, 0, yAxisX);
+    CTX.restore();
+
+    // Render X-axis label units
+    var xAxisUnitScale = 110;
+    for (var m = 1; m < 11; m++) {
+        CTX.beginPath();
+        CTX.font = labelXYUnitsFont;
+        CTX.fillStyle = labelXYUnitsColor;
+        CTX.textAlign = 'center';
+        CTX.fillText((m * 10) + "%", canvasZeroX + (m * xAxisUnitScale), canvasZeroY + 15);
+        //CTX.fillText("$" + (m * 10), canvasZeroX + (m * xAxisUnitScale), canvasZeroY + 15);
+    }
+
+    // Render X-axis label
+    CTX.beginPath();
+    CTX.font = labelXYFont;
+    CTX.fillStyle = labelXYColor;
+    CTX.textAlign = 'center';
+    CTX.fillText(p.labelXAxisText, canvasZeroX + ((canvasWidth - canvasZeroX) / 2), canvasZeroY + 50);
+
+    // Render datapoints
+    var datapointlist = [];
+    for (var e = 0; e < p.data.length; e++) {
+        CTX.beginPath();
+        const datapoint = new Path2D();
+
+        var xpos = (xAxisUnitScale * 10) * (p.data[e].accountsactionedpercent / 100);
+        var ypos = (canvasHorizontalLineSpacing * 10) * (p.data[e].meetingscompletedpercent / 100);
+        datapoint.arc(canvasZeroX + xpos, canvasZeroY - ypos, 30, 0, Math.PI * 2, false);
+        CTX.fillStyle = datapointCircleFillColor;
+        var circleBorderWidth = p.data[e].msxopportunitypercent;
+        if (circleBorderWidth < 10) {
+            circleBorderWidth = 10;
+        } else if (circleBorderWidth > 100) {
+            circleBorderWidth = 100;
+        }
+        CTX.lineWidth = (circleBorderWidth / 10);
+        CTX.strokeStyle = datapointCircleBorderColor;
+        CTX.fill(datapoint);
+        CTX.stroke(datapoint);
+        datapointlist.push(datapoint);
+
+        // Render initials
+        var getInitials = function (string) {
+            var names = string.split(' '),
+                initials = names[0].substring(0, 1).toUpperCase();
+
+            if (names.length > 1) {
+                initials += names[names.length - 1].substring(0, 1).toUpperCase();
+            }
+            return initials;
+        };
+
+        CTX.font = datapointTitleFont;
+        CTX.fillStyle = datapointCircleBorderColor;
+        CTX.textAlign = 'center';
+        CTX.fillText(getInitials(p.data[e].fullname), canvasZeroX + xpos, (canvasZeroY - ypos) + 5);
+    }
+
+    // Event listener for hover/highlight on each datapoint
+    canvas.addEventListener('mousemove', function (event) {
+        event = event || window.event;
+        for (var i = datapointlist.length - 1; i >= 0; i--) {
+            if (datapointlist[i] && CTX.isPointInPath(datapointlist[i], event.offsetX, event.offsetY)) {
+                //Hover over datapoint
+                canvas.style.cursor = 'pointer';
+                return
+            } else {
+                //Default when not in hover
+                canvas.style.cursor = 'default';
+            }
+        }
+    });
+
+    //Event listener for action on a datapoint
+    canvas.addEventListener('mousedown', function (event) {
+        event = event || window.event;
+        for (var i = datapointlist.length - 1; i >= 0; i--) {
+            if (datapointlist[i] && CTX.isPointInPath(datapointlist[i], event.offsetX, event.offsetY)) {
+
+                var pageYOffset = window.pageYOffset;
+                var pageXOffset = window.pageXOffset;
+                $("#dialog").dialog({ title: p.data[i].fullname });
+                //$("#dialog").dialog({ title: '|' });
+
+                var markup = `
+                <table border='0' style='white-space: nowrap; font-family: Segoe UI; font-size: 14px;'>
+                <tr>
+                    <td colspan='2' style='font-size: 16px; font-weight: bold;'>` + p.data[i].fullname + `</td>
+                    <td style='width: 100px; text-align: right;'><a href='#' onclick='ViewDetails(` + p.data[i].id + `)' style='color: #106ebe; text-decoration: underline;'>View</a></td>
+                </tr>
+                <tr>
+                    <td style='width: 100px;'>Assigned</td>
+                    <td style='width: 100px; font-weight: bold;'>` + p.data[i].assigned + `</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Actioned</td>
+                    <td style='font-weight: bold;'>` + p.data[i].accountsactionedcount + ` (` + p.data[i].accountsactionedpercent + `%)` + `</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Mtg Comp.</td>
+                    <td style='font-weight: bold;'>` + p.data[i].meetingscompletedcount + ` (` + p.data[i].meetingscompletedpercent + `%)` + `</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>MSX Opp.</td>
+                    <td style='font-weight: bold;'>` + p.data[i].msxopportunitycount + ` (` + p.data[i].msxopportunitypercent + `%)` + `</td>
+                    <td></td>
+                </tr>
+                </table>
+                `;
+
+                $("#dialog").html(markup);
+
+                $("#dialog").dialog("option", "position", [(event.pageX - pageXOffset) -150, (event.pageY - pageYOffset) + 15]).dialog("open");
+                return;
+            }
+            else {
+                $("#dialog").dialog("close");
+            }
+        }
+    });
+}
+
+function ViewDetails(userid) {
+    alert("User ID is: " + userid)
+}
 
 // ================
 // Common functions
 // ================
+
+function centerText(context, text, x, y, maxWidth, lineHeight, rendertext) {
+    var textLength = context.measureText(text);
+    context.fillText(text, x - (textLength.width / 2), y + 1);
+}
 
 function wrapText(context, text, x, y, maxWidth, lineHeight, rendertext) {
     var words = text.split(' ');

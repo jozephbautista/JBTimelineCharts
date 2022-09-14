@@ -22,6 +22,13 @@
     </div>
     <canvas id="Timeline_ProductLifecycle" style="border: 1px solid #DDDDDD;"></canvas>
 
+    <div style="margin-top: 50px;">
+        Bubble Chart
+    </div>
+    <canvas id="BubbleChart_Activity" style="border: 0px none black;"></canvas>
+    <div id="dialog">
+    </div>
+
 
     <script type="text/javascript">
 
@@ -106,8 +113,8 @@
         };
 
         // Timeline data object - Standard
-        function TimelineData_Standard(tile, month, eventdaterange, eventtype, badgetype) {
-            this.title = tile;
+        function TimelineData_Standard(title, month, eventdaterange, eventtype, badgetype) {
+            this.title = title;
             this.month = month;
             this.eventdaterange = eventdaterange;
             this.eventtype = eventtype;
@@ -133,7 +140,7 @@
         timelineDataList_Standard.push(new TimelineData_Standard('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes.FIRSTPARTYEVENT, badgetypes.ALL));
         timelineDataList_Standard.push(new TimelineData_Standard('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes.THIRDPARTYEVENT, badgetypes.ALL));
 
-        renderTimelineChart(canvas_properties, timelineDataList_Standard);
+        renderChart(canvas_properties, timelineDataList_Standard);
 
 
 
@@ -188,22 +195,6 @@
             datapointCircleFillColor: "#0078D4"
         };
 
-        // Constants - It's already used on above chart, so no need to declare it again here.
-        //const months = {
-        //    JAN: 'JANUARY',
-        //    FEB: 'FEBRUARY',
-        //    MAR: 'MARCH',
-        //    APR: 'APRIL',
-        //    MAY: 'MAY',
-        //    JUN: 'JUNE',
-        //    JUL: 'JULY',
-        //    AUG: 'AUGUST',
-        //    SEP: 'SEPTEMBER',
-        //    OCT: 'OCTOBER',
-        //    NOV: 'NOVEMBER',
-        //    DEC: 'DECEMBER'
-        //};
-
         const eventtypes_NewsReview = {
             KEYMOMENT: 'Key Moment',  // only used for legend section
             PRBEAT: 'PR Beat',        // only used for legend section
@@ -219,8 +210,8 @@
         };
 
         // Timeline data object - Standard
-        function TimelineData_NewsReview(tile, month, eventdaterange, eventtype, badgetype) {
-            this.title = tile;
+        function TimelineData_NewsReview(title, month, eventdaterange, eventtype, badgetype) {
+            this.title = title;
             this.month = month;
             this.eventdaterange = eventdaterange;
             this.eventtype = eventtype;
@@ -250,7 +241,7 @@
         timelineDataList_NewsReview.push(new TimelineData_NewsReview('Business Applications Launch Event', months.OCT, 'Oct 1', eventtypes_NewsReview.FIRSTPARTYEVENT, badgetypes_NewsReview.PRBEAT));
         timelineDataList_NewsReview.push(new TimelineData_NewsReview('Direct Sales Event', months.OCT, 'Oct 7-9', eventtypes_NewsReview.THIRDPARTYEVENT, badgetypes_NewsReview.PRBEAT));
 
-        renderTimelineChart(canvas_properties, timelineDataList_NewsReview);
+        renderChart(canvas_properties, timelineDataList_NewsReview);
 
 
 
@@ -288,8 +279,8 @@
         };
 
         // Timeline data object - Product Lifecycle
-        function TimelineData_ProductLifecycle(tile, eventdaterange, innovations) {
-            this.title = tile;
+        function TimelineData_ProductLifecycle(title, eventdaterange, innovations) {
+            this.title = title;
             this.eventdaterange = eventdaterange;
             this.innovations = innovations;
         };
@@ -303,9 +294,89 @@
         timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('CPU 2020', 'mm/dd/yyyy', new Array('Ryzen 5000', 'Intel 10th Gen')));
         timelineDataList_ProductLifecycle.push(new TimelineData_ProductLifecycle('GPU 2020', 'mm/dd/yyyy', new Array('RTX 3060 TI', 'RTX 3070', 'RTX 3080', 'RTX 3090', 'RX 6800', 'RX 6800 XT', 'RX 6900 XT')));
 
-        renderTimelineChart(canvas_properties, timelineDataList_ProductLifecycle);
-    </script>
+        renderChart(canvas_properties, timelineDataList_ProductLifecycle);
 
+
+
+
+        // =============================
+        // Bubble chart - Activity
+        // =============================
+        var canvas_properties = {
+            canvasId: "BubbleChart_Activity",
+            labelXAxisText: "Accounts Actioned (%)",
+            labelYAxisText: "Meetings Completed (%)",
+
+            data: [
+                { fullname: 'Jim Jones', assigned: 45, accountsactionedpercent: 30, meetingscompletedpercent: 30, msxopportunitypercent: 90, accountsactionedcount: 25, meetingscompletedcount: 27, msxopportunitycount: 15, id: 1001 },
+                { fullname: 'David Lee', assigned: 33, accountsactionedpercent: 43, meetingscompletedpercent: 35, msxopportunitypercent: 50, accountsactionedcount: 48, meetingscompletedcount: 55, msxopportunitycount: 26, id: 1002 },
+                { fullname: 'Eva Davis', assigned: 67, accountsactionedpercent: 60, meetingscompletedpercent: 80, msxopportunitypercent: 62, accountsactionedcount: 62, meetingscompletedcount: 58, msxopportunitycount: 35, id: 1003 },
+                { fullname: 'Tina Lane', assigned: 48, accountsactionedpercent: 90, meetingscompletedpercent: 55, msxopportunitypercent: 40, accountsactionedcount: 33, meetingscompletedcount: 35, msxopportunitycount: 37, id: 1004 }
+            ]
+        };
+
+        buildBubbleChart_Activity(canvas_properties);
+
+    </script>
 </div>
+
+
+<script>
+    $("#dialog").dialog({
+        autoOpen: false,
+        resizable: false,
+        draggable: true,
+        drag: function (event, ui) {
+            var scrolltop = parseInt($(this).data("startingScrollTop"));
+            ui.position.top -= $(this).parent().scrollTop() - scrolltop;
+        }
+    });
+
+    $("#dialog").on("dialogdrag", function (event, ui) {
+        var pageYOffset = window.pageYOffset;
+        var pageXOffset = window.pageXOffset;
+        $("#dialog").dialog("option", "position", [event.pageX - pageXOffset, event.pageY - pageYOffset]).dialog("open");
+        return;
+    });
+
+    $(".ui-dialog-titlebar").hide();
+</script>
+
+<style>
+    .ui-dialog {
+        width: 400px;
+        background: #faf9f8;
+        border: 0px;
+        box-shadow: #888888 1px 1px 3px;
+    }
+
+        .ui-dialog:after {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-top: 1px solid #EDEDED;
+            border-right: 0px solid #888888;
+            border-bottom: 0px solid #888888;
+            border-left: 1px solid #EDEDED;
+            top: 0%;
+            left: 50%;
+            margin-left: -10px;
+            content: '';
+            transform: rotate(45deg);
+            margin-top: -10px;
+            background: #faf9f8;
+        }
+
+    .ui-dialog-titlebar {
+        background: transparent;
+        border: 0px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #555555;
+    }
+</style>
+
+
+
 
 
