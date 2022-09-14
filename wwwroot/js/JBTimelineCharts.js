@@ -637,9 +637,9 @@ function buildBubbleChart_Activity(properties, functionCallback) {
 
     // Canvas properties
     var canvasWidth = 1200;
-    var canvasHeight = 570;
+    var canvasHeight = 650;
     var canvasZeroX = 70;
-    var canvasZeroY = 500;
+    var canvasZeroY = 580;
     var canvasBackgroundColor = "#ffffff";
     var canvasXYLineColor = "#eff6fc";
 
@@ -684,39 +684,68 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     CTX.beginPath();
     CTX.lineWidth = 6;
     CTX.moveTo(canvasZeroX, canvasZeroY);
-    CTX.lineTo(canvas.width, 0);
+    CTX.lineTo(canvas.width, 20);
     CTX.strokeStyle = canvasXYLineColor;
     CTX.stroke();
 
     // Get max value for X and Y
     var maxX = 0;
     var maxY = 0;
+    var minX = Number.MAX_VALUE;
+    var minY = Number.MAX_VALUE;
     for (var e = 0; e < p.data.length; e++) {
         if (p.data[e].accountsactionedpercent > maxX) {
             maxX = p.data[e].accountsactionedpercent;
         }
 
+        if (p.data[e].accountsactionedpercent < minX) {
+            minX = p.data[e].accountsactionedpercent;
+        }
+
         if (p.data[e].meetingscompletedpercent > maxY) {
             maxY = p.data[e].meetingscompletedpercent;
         }
+
+        if (p.data[e].meetingscompletedpercent < minY) {
+            minY = p.data[e].meetingscompletedpercent;
+        }
     }
 
-    // Add padding for max X and Y so that circle would fit within the chart
-    maxX = maxX * 1.1;
-    maxY = maxY * 1.2;
+    // Add padding and round to nearest 10s or 100s
+    if (maxX < 10) {
+        maxX = Math.ceil(maxX / 10) * 10;
+    }
+    else {
+        maxX = Math.ceil(maxX / 100) * 100;
+    }
 
-    // Round to nearest 10
-    maxX = Math.ceil(maxX / 10) * 10;
-    maxY = Math.ceil(maxY / 10) * 10;
-    //console.log(maxX + ' --- ' + maxY);
+    if (maxY < 10) {
+        maxY = Math.ceil(maxY / 10) * 10;
+    }
+    else {
+        maxY = Math.ceil(maxY / 100) * 100;
+    }
+    minX = Math.floor(minX) - 10;
+    minY = Math.floor(minY) - 10;
+
+
+    if (minX < 25) {
+        minX = 0;
+    }
+
+    if (minY < 25) {
+        minY = 0;
+    }
 
     // Render Y-axis lines and label units
     var yAxisUnitScale = 550 / (maxY / 10);
-    for (var m = 1; m < maxY; m++) {
+    var tickInterval = maxY / 10;
+    var tickValue = 0;
+    for (var m = 1; m < 11; m++) {
         CTX.beginPath();
         CTX.lineWidth = .5;
-        CTX.moveTo(canvasZeroX, canvasZeroY - (m * yAxisUnitScale));
-        CTX.lineTo(canvasWidth, canvasZeroY - (m * yAxisUnitScale));
+        CTX.moveTo(canvasZeroX, canvasZeroY - (m * 55));
+        CTX.lineTo(canvasWidth, canvasZeroY - (m * 55));
         CTX.strokeStyle = canvasHorizontalLineColor;
         CTX.stroke();
 
@@ -724,8 +753,8 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         CTX.font = labelXYUnitsFont;
         CTX.fillStyle = labelXYUnitsColor;
         CTX.textAlign = 'right';
-        CTX.fillText((m * 10) + "%", canvasZeroX - 5, canvasZeroY - (m * yAxisUnitScale));
-        //CTX.fillText("$" + (m * 10), canvasZeroX - 5, canvasZeroY - (m * yAxisUnitScale));
+        tickValue = Math.round(tickValue + tickInterval);
+        CTX.fillText(tickValue + "%", canvasZeroX - 5, canvasZeroY - (m * 55) + 3);
     }
 
     // Render Y-axis label (rotate vertically)
@@ -742,13 +771,15 @@ function buildBubbleChart_Activity(properties, functionCallback) {
 
     // Render X-axis label units
     var xAxisUnitScale = 1100 / (maxX / 10);
-    for (var m = 1; m < maxX; m++) {
+    tickInterval = maxX / 10;
+    tickValue = 0;
+    for (var m = 1; m < 11; m++) {
         CTX.beginPath();
         CTX.font = labelXYUnitsFont;
         CTX.fillStyle = labelXYUnitsColor;
         CTX.textAlign = 'center';
-        CTX.fillText((m * 10) + "%", canvasZeroX + (m * xAxisUnitScale), canvasZeroY + 15);
-        //CTX.fillText("$" + (m * 10), canvasZeroX + (m * xAxisUnitScale), canvasZeroY + 15);
+        tickValue = Math.round(tickValue + tickInterval);
+        CTX.fillText(tickValue + "%", canvasZeroX + (m * 110), canvasZeroY + 15);
     }
 
     // Render X-axis label
@@ -862,6 +893,7 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         }
     });
 }
+
 
 // ================
 // Common functions
