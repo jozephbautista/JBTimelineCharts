@@ -644,7 +644,6 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     var canvasXYLineColor = "#eff6fc";
 
     // Horizontal lines
-    var canvasHorizontalLineSpacing = 48;
     var canvasHorizontalLineColor = '#E1E1E1';
 
     // Fonts for X-axis and Y-axis units
@@ -689,12 +688,35 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     CTX.strokeStyle = canvasXYLineColor;
     CTX.stroke();
 
+    // Get max value for X and Y
+    var maxX = 0;
+    var maxY = 0;
+    for (var e = 0; e < p.data.length; e++) {
+        if (p.data[e].accountsactionedpercent > maxX) {
+            maxX = p.data[e].accountsactionedpercent;
+        }
+
+        if (p.data[e].meetingscompletedpercent > maxY) {
+            maxY = p.data[e].meetingscompletedpercent;
+        }
+    }
+
+    // Add padding for max X and Y so that circle would fit within the chart
+    maxX = maxX * 1.1;
+    maxY = maxY * 1.2;
+
+    // Round to nearest 10
+    maxX = Math.ceil(maxX / 10) * 10;
+    maxY = Math.ceil(maxY / 10) * 10;
+    //console.log(maxX + ' --- ' + maxY);
+
     // Render Y-axis lines and label units
-    for (var m = 1; m < 11; m++) {
+    var yAxisUnitScale = 550 / (maxY / 10);
+    for (var m = 1; m < maxY; m++) {
         CTX.beginPath();
         CTX.lineWidth = .5;
-        CTX.moveTo(canvasZeroX, canvasZeroY - (m * canvasHorizontalLineSpacing));
-        CTX.lineTo(canvasWidth, canvasZeroY - (m * canvasHorizontalLineSpacing));
+        CTX.moveTo(canvasZeroX, canvasZeroY - (m * yAxisUnitScale));
+        CTX.lineTo(canvasWidth, canvasZeroY - (m * yAxisUnitScale));
         CTX.strokeStyle = canvasHorizontalLineColor;
         CTX.stroke();
 
@@ -702,8 +724,8 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         CTX.font = labelXYUnitsFont;
         CTX.fillStyle = labelXYUnitsColor;
         CTX.textAlign = 'right';
-        CTX.fillText((m * 10) + "%", canvasZeroX - 5, canvasZeroY - (m * canvasHorizontalLineSpacing));
-        //CTX.fillText("$" + (m * 10), canvasZeroX - 5, canvasZeroY - (m * canvasHorizontalLineSpacing));
+        CTX.fillText((m * 10) + "%", canvasZeroX - 5, canvasZeroY - (m * yAxisUnitScale));
+        //CTX.fillText("$" + (m * 10), canvasZeroX - 5, canvasZeroY - (m * yAxisUnitScale));
     }
 
     // Render Y-axis label (rotate vertically)
@@ -719,8 +741,8 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     CTX.restore();
 
     // Render X-axis label units
-    var xAxisUnitScale = 110;
-    for (var m = 1; m < 11; m++) {
+    var xAxisUnitScale = 1100 / (maxX / 10);
+    for (var m = 1; m < maxX; m++) {
         CTX.beginPath();
         CTX.font = labelXYUnitsFont;
         CTX.fillStyle = labelXYUnitsColor;
@@ -743,7 +765,7 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         const datapoint = new Path2D();
 
         var xpos = (xAxisUnitScale * 10) * (p.data[e].accountsactionedpercent / 100);
-        var ypos = (canvasHorizontalLineSpacing * 10) * (p.data[e].meetingscompletedpercent / 100);
+        var ypos = (yAxisUnitScale * 10) * (p.data[e].meetingscompletedpercent / 100);
         datapoint.arc(canvasZeroX + xpos, canvasZeroY - ypos, 30, 0, Math.PI * 2, false);
         CTX.fillStyle = datapointCircleFillColor;
         var circleBorderWidth = p.data[e].msxopportunitypercent;
@@ -799,7 +821,6 @@ function buildBubbleChart_Activity(properties, functionCallback) {
                 var pageYOffset = window.pageYOffset;
                 var pageXOffset = window.pageXOffset;
                 $("#dialog").dialog({ title: p.data[i].fullname });
-                //$("#dialog").dialog({ title: '|' });
 
                 var markup = `
                 <table border='0' style='white-space: nowrap; font-family: Segoe UI; font-size: 14px;'>
@@ -832,7 +853,7 @@ function buildBubbleChart_Activity(properties, functionCallback) {
 
                 $("#dialog").html(markup);
 
-                $("#dialog").dialog("option", "position", [(event.pageX - pageXOffset) -150, (event.pageY - pageYOffset) + 15]).dialog("open");
+                $("#dialog").dialog("option", "position", [(event.pageX - pageXOffset) - 150, (event.pageY - pageYOffset) + 15]).dialog("open");
                 return;
             }
             else {
