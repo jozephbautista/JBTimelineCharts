@@ -680,14 +680,6 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     CTX.strokeStyle = canvasXYLineColor;
     CTX.stroke();
 
-    // Render diagonal line
-    CTX.beginPath();
-    CTX.lineWidth = 6;
-    CTX.moveTo(canvasZeroX, canvasZeroY);
-    CTX.lineTo(canvas.width, 20);
-    CTX.strokeStyle = canvasXYLineColor;
-    CTX.stroke();
-
     // Get max value for X and Y
     var maxX = 0;
     var maxY = 0;
@@ -736,6 +728,48 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     if (minY < 25) {
         minY = 0;
     }
+
+
+    // ========================================
+    // Render diagonal line (hardcoded)
+    //CTX.beginPath();
+    //CTX.lineWidth = 6;
+    //CTX.moveTo(canvasZeroX, canvasZeroY);
+    //CTX.lineTo(canvas.width, 20);
+    //CTX.strokeStyle = canvasXYLineColor;
+    //CTX.stroke();
+    // ========================================
+
+    // ========================================
+    // Render diagonal line (using math)
+    CTX.beginPath();
+    CTX.lineWidth = 6;
+    CTX.moveTo(canvasZeroX, canvasZeroY);
+
+    var chart_length = canvasWidth - canvasZeroX;
+    var chart_height = canvasZeroY;
+    var diagonal_length = Math.floor(Math.sqrt(chart_length * chart_length + chart_height * chart_height));
+
+    var chart_divider_x = 1;
+    if (maxX >= 100) {
+        chart_divider_x = maxX / 100;
+    }
+
+    var chart_divider_y = 1;
+    if (maxY >= 100) {
+        chart_divider_y = maxY / 100;
+    }
+
+    var chart_virtual_width = chart_length / chart_divider_x;
+    var chart_virtual_height = chart_height / chart_divider_y;
+    var rad = Math.atan(chart_virtual_height / chart_virtual_width);
+    var chart_diagonal_degrees = -Math.abs(Math.floor(rad * (180 / Math.PI))) + .2;
+
+    CTX.lineTo(canvasZeroX + diagonal_length * Math.cos(Math.PI * chart_diagonal_degrees / 180.0), canvasZeroY + diagonal_length * Math.sin(Math.PI * chart_diagonal_degrees / 180.0));
+    CTX.strokeStyle = canvasXYLineColor;
+    CTX.stroke();
+    // ========================================
+
 
     // Render Y-axis lines and label units
     var yAxisUnitScale = 550 / (maxY / 10);
