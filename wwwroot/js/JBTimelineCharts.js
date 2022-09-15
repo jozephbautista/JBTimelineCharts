@@ -634,6 +634,7 @@ function buildChartProductLifecycle(properties, timelineData) {
 }
 
 
+
 function buildBubbleChart_Activity(properties, functionCallback) {
 
     // Canvas properties
@@ -889,7 +890,7 @@ function buildBubbleChart_Activity(properties, functionCallback) {
                 <table border='0' style='white-space: nowrap; font-family: Segoe UI; font-size: 14px;'>
                 <tr>
                     <td colspan='2' style='font-size: 16px; font-weight: bold;'>` + p.data[i].fullname + `</td>
-                    <td style='width: 100px; text-align: right;'><a href='#' onclick='functionCallback(` + p.data[i].id + `)' style='color: #106ebe; text-decoration: underline;'>View</a></td>
+                    <td style='width: 100px; text-align: right;'><a href='#' onclick='` + functionCallback + `(` + p.data[i].id + `)' style='color: #106ebe; text-decoration: underline;'>View</a></td>
                 </tr>
                 <tr>
                     <td style='width: 100px;'>Assigned</td>

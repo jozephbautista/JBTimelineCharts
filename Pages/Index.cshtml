@@ -316,15 +316,14 @@
             ]
         };
 
-        buildBubbleChart_Activity(canvas_properties);
-
+        buildBubbleChart_Activity(canvas_properties, "functionToCall");
     </script>
 </div>
 
 
 <script>
-    function functionCallback(userid) {
-        alert('The user ID is: ' + userid);
+    function functionToCall(userid) {
+        alert('Function called!');
     }
 </script>
 
