@@ -26,7 +26,7 @@
         Bubble Chart
     </div>
     <canvas id="BubbleChart_Activity" style="border: 0px none black;"></canvas>
-    <div id="dialog">
+    <div id="chartdialog">
     </div>
 
 
@@ -303,6 +303,7 @@
         // Bubble chart - Activity
         // =============================
         var canvas_properties = {
+            labelFormatting: "Percent",  // or "Currency"
             canvasId: "BubbleChart_Activity",
             labelXAxisText: "Accounts Actioned (%)",
             labelYAxisText: "Meetings Completed (%)",
@@ -325,36 +326,22 @@
     function functionCallback(userid) {
         alert('The user ID is: ' + userid);
     }
-
-    $("#dialog").dialog({
-        autoOpen: false,
-        resizable: false,
-        draggable: true,
-        drag: function (event, ui) {
-            var scrolltop = parseInt($(this).data("startingScrollTop"));
-            ui.position.top -= $(this).parent().scrollTop() - scrolltop;
-        }
-    });
-
-    $("#dialog").on("dialogdrag", function (event, ui) {
-        var pageYOffset = window.pageYOffset;
-        var pageXOffset = window.pageXOffset;
-        $("#dialog").dialog("option", "position", [event.pageX - pageXOffset, event.pageY - pageYOffset]).dialog("open");
-        return;
-    });
-
-    $(".ui-dialog-titlebar").hide();
 </script>
 
 <style>
-    .ui-dialog {
-        width: 400px;
+    #chartdialog {
+        position: absolute;
+        display: none;
+        width: 300px;
+        min-height: 30px;
         background: #faf9f8;
         border: 0px;
         box-shadow: #888888 1px 1px 3px;
+        margin: 0px;
+        padding: 10px;
     }
 
-        .ui-dialog:after {
+        #chartdialog:after {
             position: absolute;
             width: 20px;
             height: 20px;
@@ -370,14 +357,6 @@
             margin-top: -10px;
             background: #faf9f8;
         }
-
-    .ui-dialog-titlebar {
-        background: transparent;
-        border: 0px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #555555;
-    }
 </style>
 
 

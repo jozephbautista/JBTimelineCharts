@@ -633,6 +633,7 @@ function buildChartProductLifecycle(properties, timelineData) {
 
 }
 
+
 function buildBubbleChart_Activity(properties, functionCallback) {
 
     // Canvas properties
@@ -729,7 +730,6 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         minY = 0;
     }
 
-
     // ========================================
     // Render diagonal line (hardcoded)
     //CTX.beginPath();
@@ -769,7 +769,6 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     CTX.strokeStyle = canvasXYLineColor;
     CTX.stroke();
     // ========================================
-
 
     // Render Y-axis lines and label units
     var yAxisUnitScale = 550 / (maxY / 10);
@@ -881,11 +880,10 @@ function buildBubbleChart_Activity(properties, functionCallback) {
     canvas.addEventListener('mousedown', function (event) {
         event = event || window.event;
         for (var i = datapointlist.length - 1; i >= 0; i--) {
-            if (datapointlist[i] && CTX.isPointInPath(datapointlist[i], event.offsetX, event.offsetY)) {
 
-                var pageYOffset = window.pageYOffset;
-                var pageXOffset = window.pageXOffset;
-                $("#dialog").dialog({ title: p.data[i].fullname });
+            var chartdialog = document.getElementById("chartdialog");
+
+            if (datapointlist[i] && CTX.isPointInPath(datapointlist[i], event.offsetX, event.offsetY)) {
 
                 var markup = `
                 <table border='0' style='white-space: nowrap; font-family: Segoe UI; font-size: 14px;'>
@@ -916,13 +914,17 @@ function buildBubbleChart_Activity(properties, functionCallback) {
                 </table>
                 `;
 
-                $("#dialog").html(markup);
+                chartdialog.innerHTML = markup;
+                chartdialog.style.position = "absolute";
+                chartdialog.style.display = "block";
+                chartdialog.style.zIndex = "101"
+                chartdialog.style.left = (event.pageX) - 150 + "px";
+                chartdialog.style.top = (event.pageY) + 15 + "px";
 
-                $("#dialog").dialog("option", "position", [(event.pageX - pageXOffset) - 150, (event.pageY - pageYOffset) + 15]).dialog("open");
                 return;
             }
             else {
-                $("#dialog").dialog("close");
+                chartdialog.style.display = "none";
             }
         }
     });
