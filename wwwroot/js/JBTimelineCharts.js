@@ -832,7 +832,12 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         var xpos = (xAxisUnitScale * 10) * (p.data[e].accountsactionedpercent / 100);
         var ypos = (yAxisUnitScale * 10) * (p.data[e].meetingscompletedpercent / 100);
         datapoint.arc(canvasZeroX + xpos, canvasZeroY - ypos, 30, 0, Math.PI * 2, false);
-        CTX.fillStyle = datapointCircleFillColor;
+        if (!p.data[e].fillcolor) {
+            CTX.fillStyle = datapointCircleFillColor;
+        }
+        else {
+            CTX.fillStyle = p.data[e].fillcolor;
+        }
         var circleBorderWidth = p.data[e].msxopportunitypercent;
         if (circleBorderWidth < 10) {
             circleBorderWidth = 10;
@@ -840,7 +845,12 @@ function buildBubbleChart_Activity(properties, functionCallback) {
             circleBorderWidth = 100;
         }
         CTX.lineWidth = (circleBorderWidth / 10);
-        CTX.strokeStyle = datapointCircleBorderColor;
+        if (!p.data[e].strokecolor) {
+            CTX.strokeStyle = datapointCircleBorderColor;
+        }
+        else {
+            CTX.strokeStyle = p.data[e].strokecolor;
+        }
         CTX.fill(datapoint);
         CTX.stroke(datapoint);
         datapointlist.push(datapoint);
@@ -919,8 +929,14 @@ function buildBubbleChart_Activity(properties, functionCallback) {
                 chartdialog.style.position = "absolute";
                 chartdialog.style.display = "block";
                 chartdialog.style.zIndex = "101"
-                chartdialog.style.left = (event.pageX) - 150 + "px";
+
+                //Local
+                chartdialog.style.left = (event.pageX) - 160 + "px";
                 chartdialog.style.top = (event.pageY) + 15 + "px";
+
+                //CIS - Angular
+                //chartdialog.style.left = (event.offsetX) - 80 + "px";
+                //chartdialog.style.top = (event.offsetY) + 180 + "px";
 
                 return;
             }
@@ -930,6 +946,8 @@ function buildBubbleChart_Activity(properties, functionCallback) {
         }
     });
 }
+
+
 
 
 // ================
