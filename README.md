@@ -1,4 +1,8 @@
-## TimelineCharts
+## JBTimelineCharts
+
+A lightweight, high-performance, data-driven timeline and charting library built from scratch using native web technologies (pp. 1, 3-4). Designed to handle complex, overlapping time-series events and custom data tracking layout requirements where off-the-shelf solutions fall short (p. 1).
+
+---
 
 Author: Jozeph Bautista\
 LinkedIn: https://www.linkedin.com/in/jozephbautista/ \
